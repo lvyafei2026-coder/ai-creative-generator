@@ -1,0 +1,18 @@
+name = "ai-creative-generator"
+main = "src/index.js"
+compatibility_date = "2026-09-27"
+
+[ai]
+binding = "AI"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+html_handling = "none"
+run_worker_first = ["/*"]
+
+[[ratelimits]]
+name = "AI_RATE_LIMITER"
+namespace_id = "1008"
+simple = { limit = 20, period = 60 }
