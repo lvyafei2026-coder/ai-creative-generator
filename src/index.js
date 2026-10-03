@@ -118,7 +118,11 @@ async function handleGenerate(request, env) {
 
     return json({ image: response.image });
   } catch (err) {
-    console.error('Generate error:', err);
-    return json({ error: 'Processing failed. Please try again in a moment.' }, 500);
+    console.error('Generate error:', {
+      message: err.message,
+      code: err.code,        // 这个会显示 3030 或 4006
+      name: err.name
+    });
+    return json({ error: 'Processing failed.', detail: err.message, code: err.code }, 500);
   }
 }
