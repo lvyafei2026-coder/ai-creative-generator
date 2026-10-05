@@ -48,31 +48,43 @@ async function handleFile(file, key, previewEl, imgEl) {
   }
 
   // 压缩到 512x512 以内
-  const compressed = await compressImage(file, 512);
+  const compressed = await compressImage(file, 512, 'image/png');
   files[key] = compressed;
   imgEl.src = URL.createObjectURL(compressed);
   previewEl.style.display = 'block';
 }
 
-function compressImage(file, maxSize) {
+function compressImage(file, maxSize, outputType = 'image/png') {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
         let { width, height } = img;
+
+        // 强制缩放
         if (width > maxSize || height > maxSize) {
-          if (width > height) { height = (height / width) * maxSize; width = maxSize; }
-          else { width = (width / height) * maxSize; height = maxSize; }
+          if (width > height) {
+            height = Math.round((height / width) * maxSize);
+            width = maxSize;
+          } else {
+            width = Math.round((width / height) * maxSize);
+            height = maxSize;
+          }
         }
+
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
+        // 填充白色背景（防止透明 PNG 变黑）
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
         ctx.drawImage(img, 0, 0, width, height);
+
         canvas.toBlob((blob) => {
-          resolve(new File([blob], 'image.png', { type: 'image/png' }));
-        }, 'image/png');
+          resolve(new File([blob], 'image.png', { type: outputType }));
+        }, outputType, 0.9); // 0.9 是 JPEG 质量，对 PNG 无效，但保留
       };
       img.src = e.target.result;
     };
