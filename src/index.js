@@ -104,10 +104,16 @@ async function handleGenerate(request, env) {
       apiForm.append('input_image_1', new File([buf1], 'input_1.png', { type: 'image/png' }));
     }
 
+    // 先把 FormData 包装成 Request
+    const formRequest = new Request('http://dummy', {
+      method: 'POST',
+      body: apiForm
+    });
+
     const response = await env.AI.run('@cf/black-forest-labs/flux-2-klein-4b', {
       multipart: {
-        body: new Response(apiForm).body,
-        contentType: new Response(apiForm).headers.get('content-type')
+        body: formRequest.body,
+        contentType: formRequest.headers.get('content-type') || 'multipart/form-data'
       }
     });
 
