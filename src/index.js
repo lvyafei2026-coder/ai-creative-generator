@@ -104,7 +104,7 @@ async function handleGenerate(request, env) {
       apiForm.append('input_image_1', new File([buf1], 'input_1.png', { type: 'image/png' }));
     }
 
-    const response = await env.AI.run('@cf/black-forest-labs/flux-2-klein-9b', {
+    const response = await env.AI.run('@cf/black-forest-labs/flux-2-klein-4b', {
       multipart: {
         body: new Response(apiForm).body,
         contentType: new Response(apiForm).headers.get('content-type')
