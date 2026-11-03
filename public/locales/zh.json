@@ -115,5 +115,6 @@
   "ringTagTattoo": "上传身体照片，预览 6 种纹身风格",
   "ringTagBaby": "双亲照片合成宝宝长相，仅供娱乐",
   "ringTagHair": "一张自拍试戴 8 种发型",
-  "errQuota": "今日免费额度已用完，明天（UTC 0 点后）再来试试吧。"
+  "errQuota": "今日免费额度已用完，明天（UTC 0 点后）再来试试吧。",
+  "fileReadyShort": "照片已就绪"
 }

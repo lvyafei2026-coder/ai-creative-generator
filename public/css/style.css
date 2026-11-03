@@ -184,7 +184,11 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .upload-duo .upload-zone { padding: 18px 10px; margin-bottom: 12px; }
 .upload-duo .upload-icon { font-size: 1.4rem; }
 .upload-duo .upload-text { font-size: 0.8rem; }
-.upload-duo .file-chip span { font-size: 0.72rem; }
+/* 窄列（双上传并排）下的 chip：迷你照片卡——图在上、文案在下、移除按钮变角标 */
+.upload-duo .file-chip { position: relative; flex-direction: column; align-items: stretch; padding: 8px; gap: 6px; text-align: center; }
+.upload-duo .file-chip img { width: 100%; height: 76px; }
+.upload-duo .file-chip span { flex: none; font-size: 0.72rem; line-height: 1.3; }
+.upload-duo .chip-remove { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; font-size: 0.7rem; background: rgba(36,26,51,0.55); color: #fff; }
 @media (max-width: 560px) { .upload-duo { grid-template-columns: 1fr; } }
 
 /* Hairstyle 左栏：图片头像选择器 */

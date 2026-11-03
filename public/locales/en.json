@@ -115,5 +115,6 @@
   "ringTagTattoo": "Upload a body photo, preview six tattoo styles",
   "ringTagBaby": "Blend two parent photos into a baby portrait",
   "ringTagHair": "Try eight hairstyles on one selfie",
-  "errQuota": "Today's free quota is used up. Please come back tomorrow (UTC)."
+  "errQuota": "Today's free quota is used up. Please come back tomorrow (UTC).",
+  "fileReadyShort": "Photo ready"
 }
