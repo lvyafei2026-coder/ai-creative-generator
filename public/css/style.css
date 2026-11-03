@@ -25,8 +25,8 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 
 /* ---- 工作台左右分栏：左控制面板 / 右固定画布（状态切换） ---- */
 .studio { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 20px; align-items: stretch; }
-.studio .card { margin-bottom: 0; display: flex; flex-direction: column; padding: 20px; }
-.stage { padding: 20px; min-height: 560px; }
+.studio .card { margin-bottom: 0; display: flex; flex-direction: column; padding: 18px; }
+.stage { padding: 18px; min-height: 0; }
 .ex-view { display: flex; flex-direction: column; }
 .ex-head { margin-bottom: 12px; }
 .ex-title { font-size: 1.02rem; margin: 0 0 4px; letter-spacing: -0.01em; }
@@ -54,7 +54,7 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .stage[data-state="preview"] .ex-view,
 .stage[data-state="loading"] .ex-view,
 .stage[data-state="result"] .ex-view { display: none; }
-.stage-canvas { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; border-radius: 14px; border: 2px solid var(--border); background-color: #fbf9ff; background-image: radial-gradient(rgba(124,58,237,0.07) 1.5px, transparent 1.5px); background-size: 22px 22px; overflow: hidden; min-height: 340px; padding: 14px; }
+.stage-canvas { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; border-radius: 14px; border: 2px solid var(--border); background-color: #fbf9ff; background-image: radial-gradient(rgba(124,58,237,0.07) 1.5px, transparent 1.5px); background-size: 22px 22px; overflow: hidden; min-height: 300px; padding: 14px; }
 .stage-canvas img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; border: 2px solid var(--border); background: #fff; }
 .sample-tag { position: absolute; top: 22px; left: 22px; z-index: 2; background: rgba(36,26,51,0.72); color: #fff; font-size: 0.68rem; font-weight: 800; padding: 4px 11px; border-radius: 999px; letter-spacing: 0.05em; text-transform: uppercase; }
 .canvas-spinner { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: rgba(250, 247, 252, 0.88); font-size: 0.9rem; font-weight: 700; color: var(--accent); text-align: center; padding: 20px; }
@@ -190,20 +190,20 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 /* Hairstyle 左栏：图片头像选择器 */
 #hairPresets { grid-template-columns: repeat(4, 1fr); }
 #hairPresets .preset-btn { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-#hairPresets .preset-btn img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: #f1ebfa; }
+#hairPresets .preset-btn img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; background: #f1ebfa; }
 #hairPresets .preset-btn span { display: block; padding: 4px 2px; font-size: 0.66rem; font-weight: 800; text-align: center; white-space: nowrap; }
 
-/* Baby 右栏：两大人在上、宝宝在下（宽幅矮图） */
-#exBaby { grid-template-columns: repeat(2, 1fr); }
-#exBaby .ex-card.baby { grid-column: 1 / -1; }
-#exBaby .ex-card.baby img { aspect-ratio: 2 / 1; object-position: center 25%; }
-#exBaby .ex-card.baby .ex-label { font-size: 0.8rem; padding: 8px 4px; }
+/* Baby 右栏：两大人在上、宝宝在下（紧凑一屏） */
+#exBaby { grid-template-columns: repeat(2, 1fr); max-width: 420px; margin: 0 auto; width: 100%; }
+#exBaby .ex-card.baby { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; padding: 10px 12px; }
+#exBaby .ex-card.baby img { width: 170px; height: 170px; flex: 0 0 170px; object-position: center 25%; }
+#exBaby .ex-card.baby .ex-label { flex: 1; text-align: left; font-size: 0.95rem; padding: 0; }
 
-.mode-desc { font-size: 0.88rem; color: var(--muted); margin: 0 0 16px; }
+.mode-desc { font-size: 0.88rem; color: var(--muted); margin: 0 0 12px; }
 label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 6px; }
 
 /* Mode tabs：分段控件 */
-.mode-tabs { display: flex; gap: 6px; margin-bottom: 18px; background: var(--lav); padding: 4px; border-radius: 12px; }
+.mode-tabs { display: flex; gap: 6px; margin-bottom: 14px; background: var(--lav); padding: 4px; border-radius: 12px; }
 .mode-tab { flex: 1; padding: 10px 6px; border: 2px solid transparent; background: transparent; color: var(--muted); border-radius: 9px; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: all 0.15s; font-family: inherit; white-space: nowrap; }
 .mode-tab.active { background: #fff; color: var(--accent-dark); border-color: var(--border); box-shadow: 0 2px 0 rgba(36,26,51,0.06); }
 .mode-tab:hover:not(.active) { color: var(--accent-dark); }
@@ -211,20 +211,20 @@ label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 6px
 input[type="text"] { width: 100%; padding: 11px 13px; border: 2px solid var(--border); border-radius: 11px; font-size: 0.95rem; margin-bottom: 4px; background: #fff; color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; font-family: inherit; }
 input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
 
-.upload-zone { border: 2.5px dashed #c4b5fd; border-radius: 14px; padding: 24px 20px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: #f6f1fd; margin-bottom: 14px; }
+.upload-zone { border: 2.5px dashed #c4b5fd; border-radius: 14px; padding: 16px 18px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; background: #f6f1fd; margin-bottom: 12px; }
 .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); background: #efe7fd; }
 .upload-icon { font-size: 1.7rem; margin-bottom: 4px; }
 .upload-text { font-weight: 800; color: var(--text); font-size: 0.92rem; margin-bottom: 2px; }
 .upload-hint { font-size: 0.78rem; color: var(--muted); }
 
 /* 已选照片：紧凑横条（大图预览在右侧画布） */
-.file-chip { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 2px solid var(--border); background: #f6f1fd; border-radius: 12px; margin-bottom: 14px; }
+.file-chip { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 2px solid var(--border); background: #f6f1fd; border-radius: 12px; margin-bottom: 12px; }
 .file-chip img { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border); flex-shrink: 0; }
 .file-chip span { flex: 1; font-size: 0.85rem; font-weight: 700; color: var(--accent); }
 .chip-remove { width: 26px; height: 26px; border-radius: 50%; background: var(--border); color: var(--muted); border: none; cursor: pointer; font-size: 0.8rem; line-height: 1; flex-shrink: 0; transition: background 0.15s, color 0.15s; }
 .chip-remove:hover { background: #fecaca; color: #b91c1c; }
 
-.preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 14px; }
+.preset-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 12px; }
 .preset-btn { position: relative; padding: 8px 4px; border: 2px solid var(--border); background: #fff; color: var(--text); border-radius: 11px; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; box-shadow: 0 2px 0 rgba(36,26,51,0.06); }
 .preset-btn:hover { border-color: #c4b5fd; transform: translateY(-1px); }
 .preset-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 3px 0 rgba(109,40,217,0.5); }
