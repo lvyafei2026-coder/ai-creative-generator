@@ -129,6 +129,13 @@ async function handleGenerate(request, env) {
       code: err.code,        // 这个会显示 3030 或 4006
       name: err.name
     });
+    // Workers AI 免费层日配额耗尽（4006 neurons exhausted），对齐 figurine 站的处理
+    if (String(err.message || '').includes('4006') || err.code === 4006) {
+      return json({
+        error: "Today's free quota is used up. Please come back tomorrow.",
+        code: 'QUOTA_EXCEEDED'
+      }, 429);
+    }
     return json({ error: 'Processing failed.', detail: err.message, code: err.code }, 500);
   }
 }

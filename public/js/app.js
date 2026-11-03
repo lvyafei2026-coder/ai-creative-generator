@@ -190,7 +190,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function selectPreset(mode, preset) {
-  presets[mode] = preset;
+  const key = mode === 'hairstyle' ? 'hair' : mode;
+  presets[key] = preset;
   const gridId = mode === 'tattoo' ? 'tattooPresets' : 'hairPresets';
   document.querySelectorAll('#' + gridId + ' .preset-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.preset === preset));
@@ -249,14 +250,26 @@ async function generate() {
 
     if (res.status === 429) {
       setStage('preview');
-      showError(tr.errRateLimit || 'Too many requests. Please wait a minute.');
+      let code429 = '';
+      try { code429 = (await res.json()).code || ''; } catch (e) {}
+      if (code429 === 'QUOTA_EXCEEDED') {
+        showError(tr.errQuota || "Today's free quota is used up. Please come back tomorrow.");
+      } else {
+        showError(tr.errRateLimit || 'Too many requests. Please wait a minute.');
+      }
       return;
     }
 
     const data = await res.json();
     if (!res.ok || !data.image) {
       setStage('preview');
-      showError(data.error || (tr.errGeneric || 'Generation failed.'));
+      // 兜底：后端未映射的额度错误（4006 neurons exhausted）
+      if (String(data.code) === '4006' || String(data.detail || '').includes('4006')) {
+        showError(tr.errQuota || "Today's free quota is used up. Please come back tomorrow.");
+        return;
+      }
+      const detail = data.code ? ' (' + data.code + ')' : '';
+      showError((data.error || (tr.errGeneric || 'Generation failed.')) + detail);
       return;
     }
 
