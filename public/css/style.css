@@ -142,6 +142,63 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
   .stage-canvas { min-height: 300px; }
 }
 
+/* ---- 三模式差异化主题（挂在 .studio[data-mode] 上） ---- */
+/* Baby：玫瑰粉 */
+.studio[data-mode="baby"] { --accent:#db2777; --accent-dark:#be185d; --border:#f3d9e6; --lav:#fce7f3; --shadow:0 2px 0 rgba(36,26,51,0.06), 0 14px 34px rgba(219,39,119,0.10); }
+.studio[data-mode="baby"] .mode-tabs { background: #fce7f3; }
+.studio[data-mode="baby"] .mode-tab.active { color: #be185d; }
+.studio[data-mode="baby"] .upload-zone { background: #fdf2f8; border-color: #f6aed1; }
+.studio[data-mode="baby"] .upload-zone:hover, .studio[data-mode="baby"] .upload-zone.dragover { border-color: var(--accent); background: #fce7f3; }
+.studio[data-mode="baby"] .file-chip { background: #fdf2f8; }
+.studio[data-mode="baby"] .stage-canvas { background-color: #fdf7fa; background-image: radial-gradient(rgba(219,39,119,0.07) 1.5px, transparent 1.5px); }
+.studio[data-mode="baby"] .canvas-spinner { background: rgba(253, 247, 250, 0.88); }
+
+/* Tattoo：暗色墨感 */
+.studio[data-mode="tattoo"] { --card:#171126; --text:#efe9fb; --muted:#9c91b8; --border:#2f2749; --accent:#a78bfa; --accent-dark:#8b5cf6; --lav:#241b3a; --shadow:0 2px 0 rgba(0,0,0,0.28), 0 14px 34px rgba(0,0,0,0.4); }
+.studio[data-mode="tattoo"] .card { color: var(--text); }
+.studio[data-mode="tattoo"] .mode-tabs { background: #241b3a; }
+.studio[data-mode="tattoo"] .mode-tab.active { background: #2f2749; color: #efe9fb; }
+.studio[data-mode="tattoo"] .upload-zone { background: #1f1833; border-color: #43355f; }
+.studio[data-mode="tattoo"] .upload-zone:hover, .studio[data-mode="tattoo"] .upload-zone.dragover { border-color: var(--accent); background: #241b3a; }
+.studio[data-mode="tattoo"] .file-chip { background: #1f1833; }
+.studio[data-mode="tattoo"] .chip-remove { background: #3b2f5c; color: #c4b8e0; }
+.studio[data-mode="tattoo"] input[type="text"] { background: #221a38; border-color: #3b2f5c; color: var(--text); }
+.studio[data-mode="tattoo"] input[type="text"]::placeholder { color: #6f6490; }
+.studio[data-mode="tattoo"] .preset-btn { background: #221a38; border-color: #3b2f5c; }
+.studio[data-mode="tattoo"] .preset-btn:hover { border-color: var(--accent); }
+.studio[data-mode="tattoo"] .ex-card { background: #221a38; border-color: #3b2f5c; }
+.studio[data-mode="tattoo"] .ex-card img { background: #171126; }
+.studio[data-mode="tattoo"] .ex-card:hover { border-color: var(--accent); }
+.studio[data-mode="tattoo"] .ex-label { color: var(--text); }
+.studio[data-mode="tattoo"] .stage-canvas { background-color: #141021; background-image: radial-gradient(rgba(167,139,250,0.12) 1.5px, transparent 1.5px); border-color: #2f2749; }
+.studio[data-mode="tattoo"] .stage-canvas img { background: #171126; }
+.studio[data-mode="tattoo"] .canvas-spinner { background: rgba(23, 17, 38, 0.9); }
+.studio[data-mode="tattoo"] .back-btn { background: transparent; border-color: #3b2f5c; color: var(--muted); }
+.studio[data-mode="tattoo"] button.calc { background: #a78bfa; color: #241b3a; box-shadow: 0 5px 0 rgba(139,92,246,0.45); }
+.studio[data-mode="tattoo"] .copy-btn { background: #a78bfa; color: #241b3a; box-shadow: 0 3px 0 rgba(139,92,246,0.45); }
+.studio[data-mode="tattoo"] .copy-btn:hover { background: #c4b5fd; }
+.studio[data-mode="tattoo"] .result-disclaimer { border-top-color: #2f2749; }
+
+/* Baby 左栏：双上传并排 */
+.upload-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.upload-duo .upload-zone { padding: 18px 10px; margin-bottom: 12px; }
+.upload-duo .upload-icon { font-size: 1.4rem; }
+.upload-duo .upload-text { font-size: 0.8rem; }
+.upload-duo .file-chip span { font-size: 0.72rem; }
+@media (max-width: 560px) { .upload-duo { grid-template-columns: 1fr; } }
+
+/* Hairstyle 左栏：图片头像选择器 */
+#hairPresets { grid-template-columns: repeat(4, 1fr); }
+#hairPresets .preset-btn { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+#hairPresets .preset-btn img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: #f1ebfa; }
+#hairPresets .preset-btn span { display: block; padding: 4px 2px; font-size: 0.66rem; font-weight: 800; text-align: center; white-space: nowrap; }
+
+/* Baby 右栏：两大人在上、宝宝在下（宽幅矮图） */
+#exBaby { grid-template-columns: repeat(2, 1fr); }
+#exBaby .ex-card.baby { grid-column: 1 / -1; }
+#exBaby .ex-card.baby img { aspect-ratio: 2 / 1; object-position: center 25%; }
+#exBaby .ex-card.baby .ex-label { font-size: 0.8rem; padding: 8px 4px; }
+
 .mode-desc { font-size: 0.88rem; color: var(--muted); margin: 0 0 16px; }
 label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 6px; }
 
@@ -211,6 +268,7 @@ li { margin-bottom: 8px; line-height: 1.65; }
 .site-header { position: sticky; top: 0; z-index: 50; background: rgba(250,247,252,0.85); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 2px solid var(--border, #e9e1f5); }
 .site-header-inner { max-width: 1120px; min-height: 68px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .site-brand { min-width: 0; display: flex; align-items: center; gap: 10px; color: var(--text, #241a33); text-decoration: none; font-weight: 700; }
+.site-brand-logo { width: 38px; height: 38px; flex: 0 0 38px; display: block; border-radius: 12px; object-fit: cover; box-shadow: 0 3px 0 rgba(109,40,217,0.4); }
 .site-brand-mark { width: 38px; height: 38px; flex: 0 0 38px; display: grid; place-items: center; border-radius: 12px; background: linear-gradient(135deg, #a78bfa, #7c3aed); color: #fff; font-size: 0.72rem; font-weight: 800; box-shadow: 0 3px 0 rgba(109,40,217,0.4); }
 .site-brand-name { font-size: 0.95rem; line-height: 1.25; }
 .site-nav { display: flex; align-items: center; gap: 10px; }

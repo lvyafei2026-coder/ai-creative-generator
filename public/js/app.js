@@ -45,6 +45,7 @@ function switchMode(mode) {
   document.querySelectorAll('.mode-panel').forEach(p => p.style.display = 'none');
   document.getElementById('mode-' + mode).style.display = 'block';
   stage.dataset.mode = mode;
+  document.getElementById('studio').dataset.mode = mode;
   errorEl.style.display = 'none';
   updateGenerateBtn();
   setStage('examples');

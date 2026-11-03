@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Creative Generator — Tattoo, Baby & Hairstyle Preview (Free)</title>
+<title>Toolara Creative — AI Tattoo, Baby &amp; Hairstyle Preview (Free)</title>
 <meta name="description" content="Free AI creative generator. Preview tattoos, imagine your future baby, or try on new hairstyles — all from a single upload. Powered by Cloudflare Workers AI.">
 <meta name="keywords" content="ai tattoo generator, ai baby generator, hairstyle changer, ai face editor, virtual makeover">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -14,9 +14,14 @@
 <link rel="alternate" hreflang="zh-Hans" href="https://creative.toolara.dev/zh/">
 <link rel="alternate" hreflang="x-default" href="https://creative.toolara.dev/">
 
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png">
+<link rel="apple-touch-icon" href="/images/icons/apple-touch-icon.png">
+
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="AI Creative Generator">
-<meta property="og:title" content="AI Creative Generator — Tattoo, Baby & Hairstyle Preview">
+<meta property="og:site_name" content="Toolara Creative">
+<meta property="og:title" content="Toolara Creative — Tattoo, Baby & Hairstyle Preview">
 <meta property="og:description" content="Preview tattoos, imagine your future baby, or try on new hairstyles.">
 <meta property="og:url" content="https://creative.toolara.dev/">
 <meta property="og:image" content="https://creative.toolara.dev/og-image.png">
@@ -30,7 +35,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "AI Creative Generator",
+  "name": "Toolara Creative",
   "url": "https://creative.toolara.dev/",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any",
@@ -109,7 +114,7 @@
 @media(max-width:640px){.site-footer-grid{grid-template-columns:1fr !important;gap:26px !important}}
 </style></head>
 <body>
-<header class="site-header"><div class="site-header-inner"><a class="site-brand" href="/" aria-label="AI Creative Generator"><span class="site-brand-mark" aria-hidden="true">CG</span><span class="site-brand-name" data-i18n="title"></span></a><nav class="site-nav" aria-label="Site navigation"><select id="langSelect" onchange="setLang(this.value)" aria-label="Language">
+<header class="site-header"><div class="site-header-inner"><a class="site-brand" href="/" aria-label="Toolara Creative"><img class="site-brand-logo" src="/images/logo-96.png" alt="Toolara Creative logo" width="38" height="38"><span class="site-brand-name" data-i18n="title"></span></a><nav class="site-nav" aria-label="Site navigation"><select id="langSelect" onchange="setLang(this.value)" aria-label="Language">
       <option value="en">English</option>
       <option value="zh">简体中文</option>
     </select></nav></div></header>
@@ -130,7 +135,7 @@
 </header>
 
 <main class="wrap">
-  <div class="studio">
+  <div class="studio" id="studio" data-mode="tattoo">
     <section class="card">
       <h2 class="visually-hidden" data-i18n="calcHeading">Creative generator</h2>
 
@@ -177,32 +182,37 @@
       <div id="mode-baby" class="mode-panel" style="display:none;">
         <p class="mode-desc" data-i18n="descBaby">Upload photos of both parents to imagine a future baby.</p>
 
-        <label data-i18n="parent1">Parent 1 photo</label>
-        <div class="upload-zone" id="uploadZoneBaby1">
-          <input type="file" id="fileBaby1" accept="image/*" style="display:none;">
-          <div class="upload-content">
-            <div class="upload-icon">👤</div>
-            <div class="upload-text" data-i18n="uploadClick">Click to upload</div>
+        <div class="upload-duo">
+          <div>
+            <label data-i18n="parent1">Parent 1 photo</label>
+            <div class="upload-zone" id="uploadZoneBaby1">
+              <input type="file" id="fileBaby1" accept="image/*" style="display:none;">
+              <div class="upload-content">
+                <div class="upload-icon">👩</div>
+                <div class="upload-text" data-i18n="uploadClickShort">Click to upload</div>
+              </div>
+            </div>
+            <div class="file-chip" id="previewBaby1" style="display:none;">
+              <img id="previewImgBaby1" alt="Parent 1 thumbnail">
+              <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
+              <button class="chip-remove" type="button" onclick="clearImage('baby1')" aria-label="Remove photo">✕</button>
+            </div>
           </div>
-        </div>
-        <div class="file-chip" id="previewBaby1" style="display:none;">
-          <img id="previewImgBaby1" alt="Parent 1 thumbnail">
-          <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
-          <button class="chip-remove" type="button" onclick="clearImage('baby1')" aria-label="Remove photo">✕</button>
-        </div>
-
-        <label data-i18n="parent2">Parent 2 photo</label>
-        <div class="upload-zone" id="uploadZoneBaby2">
-          <input type="file" id="fileBaby2" accept="image/*" style="display:none;">
-          <div class="upload-content">
-            <div class="upload-icon">👤</div>
-            <div class="upload-text" data-i18n="uploadClick">Click to upload</div>
+          <div>
+            <label data-i18n="parent2">Parent 2 photo</label>
+            <div class="upload-zone" id="uploadZoneBaby2">
+              <input type="file" id="fileBaby2" accept="image/*" style="display:none;">
+              <div class="upload-content">
+                <div class="upload-icon">👨</div>
+                <div class="upload-text" data-i18n="uploadClickShort">Click to upload</div>
+              </div>
+            </div>
+            <div class="file-chip" id="previewBaby2" style="display:none;">
+              <img id="previewImgBaby2" alt="Parent 2 thumbnail">
+              <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
+              <button class="chip-remove" type="button" onclick="clearImage('baby2')" aria-label="Remove photo">✕</button>
+            </div>
           </div>
-        </div>
-        <div class="file-chip" id="previewBaby2" style="display:none;">
-          <img id="previewImgBaby2" alt="Parent 2 thumbnail">
-          <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
-          <button class="chip-remove" type="button" onclick="clearImage('baby2')" aria-label="Remove photo">✕</button>
         </div>
       </div>
 
@@ -227,14 +237,14 @@
 
         <label data-i18n="hairStyleLabel">Choose a hairstyle</label>
         <div class="preset-grid" id="hairPresets">
-          <button class="preset-btn active" data-preset="short_messy" data-i18n="presetShortMessy">Short messy</button>
-          <button class="preset-btn" data-preset="medium_wavy" data-i18n="presetMediumWavy">Medium wavy</button>
-          <button class="preset-btn" data-preset="long_straight" data-i18n="presetLongStraight">Long straight</button>
-          <button class="preset-btn" data-preset="buzz_cut" data-i18n="presetBuzzCut">Buzz cut</button>
-          <button class="preset-btn" data-preset="bob" data-i18n="presetBob">Bob</button>
-          <button class="preset-btn" data-preset="curly" data-i18n="presetCurly">Curly</button>
-          <button class="preset-btn" data-preset="pixie" data-i18n="presetPixie">Pixie</button>
-          <button class="preset-btn" data-preset="ponytail" data-i18n="presetPonytail">Ponytail</button>
+          <button class="preset-btn active" data-preset="short_messy"><img src="/examples/hair/short_messy.jpg" alt="Short messy hairstyle" width="160" height="160"><span data-i18n="presetShortMessy">Short messy</span></button>
+          <button class="preset-btn" data-preset="medium_wavy"><img src="/examples/hair/medium_wavy.jpg" alt="Medium wavy hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetMediumWavy">Medium wavy</span></button>
+          <button class="preset-btn" data-preset="long_straight"><img src="/examples/hair/long_straight.jpg" alt="Long straight hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetLongStraight">Long straight</span></button>
+          <button class="preset-btn" data-preset="buzz_cut"><img src="/examples/hair/buzz_cut.jpg" alt="Buzz cut hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetBuzzCut">Buzz cut</span></button>
+          <button class="preset-btn" data-preset="bob"><img src="/examples/hair/bob.jpg" alt="Bob hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetBob">Bob</span></button>
+          <button class="preset-btn" data-preset="curly"><img src="/examples/hair/curly.jpg" alt="Curly hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetCurly">Curly</span></button>
+          <button class="preset-btn" data-preset="pixie"><img src="/examples/hair/pixie.jpg" alt="Pixie hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetPixie">Pixie</span></button>
+          <button class="preset-btn" data-preset="ponytail"><img src="/examples/hair/ponytail.jpg" alt="Ponytail hairstyle" width="160" height="160" loading="lazy"><span data-i18n="presetPonytail">Ponytail</span></button>
         </div>
       </div>
 
@@ -247,48 +257,48 @@
       <div class="ex-view">
         <div class="ex-head">
           <h2 class="ex-title" data-i18n="exTitle">Style examples</h2>
-          <p class="ex-hint" data-i18n="exHint">Real outputs from this tool — click one to pick that style.</p>
+          <p class="ex-hint" data-i18n="exHint">Style examples — click one to pick that style.</p>
         </div>
 
         <div class="ex-grid" id="exTattoo">
           <button class="ex-card active" data-preset="minimalist" type="button">
-            <img src="/examples/tattoo/minimalist.jpg" alt="Minimalist tattoo example: a fine line tattoo on a collarbone" width="640" height="640">
+            <img src="/examples/tattoo/minimalist.jpg" alt="Minimalist tattoo example: a fine line tattoo on a man's upper back" width="640" height="640">
             <span class="ex-label" data-i18n="presetMinimalist">Minimalist</span>
           </button>
           <button class="ex-card" data-preset="geometric" type="button">
-            <img src="/examples/tattoo/geometric.jpg" alt="Geometric tattoo example" width="640" height="640" loading="lazy">
+            <img src="/examples/tattoo/geometric.jpg" alt="Geometric tattoo example: a geometric lion tattoo on a man's back" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="presetGeometric">Geometric</span>
           </button>
           <button class="ex-card" data-preset="watercolor" type="button">
-            <img src="/examples/tattoo/watercolor.jpg" alt="Watercolor tattoo example" width="640" height="640" loading="lazy">
+            <img src="/examples/tattoo/watercolor.jpg" alt="Watercolor tattoo example on a man's shoulder blade" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="presetWatercolor">Watercolor</span>
           </button>
           <button class="ex-card" data-preset="traditional" type="button">
-            <img src="/examples/tattoo/traditional.jpg" alt="American traditional tattoo example" width="640" height="640" loading="lazy">
+            <img src="/examples/tattoo/traditional.jpg" alt="American traditional tattoo example on a man's shoulder" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="presetTraditional">Traditional</span>
           </button>
           <button class="ex-card" data-preset="japanese" type="button">
-            <img src="/examples/tattoo/japanese.jpg" alt="Japanese irezumi tattoo example" width="640" height="640" loading="lazy">
+            <img src="/examples/tattoo/japanese.jpg" alt="Japanese irezumi tattoo example covering a man's back" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="presetJapanese">Japanese</span>
           </button>
           <button class="ex-card" data-preset="script" type="button">
-            <img src="/examples/tattoo/script.jpg" alt="Script lettering tattoo example" width="640" height="640" loading="lazy">
+            <img src="/examples/tattoo/script.jpg" alt="Script lettering tattoo example on a man's upper back" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="presetScript">Script</span>
           </button>
         </div>
 
         <div class="ex-grid" id="exBaby">
-          <div class="ex-card static">
-            <img src="/examples/baby/baby.jpg" alt="Baby prediction example: an AI-blended baby portrait from two parent photos" width="640" height="640">
-            <span class="ex-label" data-i18n="modeBaby">👶 Baby</span>
-          </div>
-          <div class="ex-card static">
+          <div class="ex-card static parent">
             <img src="/examples/woman.jpg" alt="Parent 1 example photo" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="parent1">Parent 1 photo</span>
           </div>
-          <div class="ex-card static">
+          <div class="ex-card static parent">
             <img src="/examples/man.jpg" alt="Parent 2 example photo" width="640" height="640" loading="lazy">
             <span class="ex-label" data-i18n="parent2">Parent 2 photo</span>
+          </div>
+          <div class="ex-card static baby">
+            <img src="/examples/baby/baby.jpg" alt="Baby prediction example: an AI-blended baby portrait from the two parent photos above" width="1280" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="modeBabyLabel">👶 Baby prediction</span>
           </div>
         </div>
 
@@ -354,20 +364,20 @@
 
   <section class="proof">
     <h2 data-i18n="proofTitle">One photo, every preview</h2>
-    <p class="proof-sub" data-i18n="proofSub">Every image below was generated from the same uploaded photo by this tool. No mockups, no Photoshop.</p>
+    <p class="proof-sub" data-i18n="proofSub">Every result below was generated by this tool from the photos shown. No mockups, no Photoshop.</p>
     <div class="proof-grid">
       <figure class="proof-item">
         <div class="proof-pair">
           <div class="proof-cell"><img src="/examples/woman.jpg" alt="Original uploaded portrait photo of a woman" width="640" height="640" loading="lazy"><span data-i18n="proofBefore">Your photo</span></div>
           <div class="proof-arrow" aria-hidden="true">→</div>
-          <div class="proof-cell"><img src="/examples/tattoo/minimalist.jpg" alt="Result: the woman with a fine line tattoo on her collarbone" width="640" height="640" loading="lazy"><span data-i18n="proofTattoo">Tattoo preview</span></div>
+          <div class="proof-cell"><img src="/examples/hair/curly.jpg" alt="Result: the woman with voluminous curly hair" width="640" height="640" loading="lazy"><span data-i18n="proofHair">Hairstyle try-on</span></div>
         </div>
       </figure>
       <figure class="proof-item">
         <div class="proof-pair">
           <div class="proof-cell"><img src="/examples/woman.jpg" alt="Original uploaded portrait photo of a woman" width="640" height="640" loading="lazy"><span data-i18n="proofBefore">Your photo</span></div>
           <div class="proof-arrow" aria-hidden="true">→</div>
-          <div class="proof-cell"><img src="/examples/hair/bob.jpg" alt="Result: the woman with a chin-length bob haircut" width="640" height="640" loading="lazy"><span data-i18n="proofHair">Hairstyle try-on</span></div>
+          <div class="proof-cell"><img src="/examples/hair/bob.jpg" alt="Result: the woman with a chin-length bob haircut" width="640" height="640" loading="lazy"><span data-i18n="proofHair2">Different style</span></div>
         </div>
       </figure>
       <figure class="proof-item">
