@@ -2,24 +2,73 @@ let currentMode = 'tattoo';
 let files = { tattoo: null, baby1: null, baby2: null, hair: null };
 let presets = { tattoo: 'minimalist', hair: 'short_messy' };
 
+const stage = document.getElementById('stage');
+const sampleImg = document.getElementById('sampleImg');
+const sampleTag = document.getElementById('sampleTag');
+const resultImg = document.getElementById('resultImg');
+const generateBtn = document.getElementById('generateBtn');
+const errorEl = document.getElementById('error');
+const previewHint = document.getElementById('previewHint');
+const loadingHint = document.getElementById('loadingHint');
+const resultBar = document.getElementById('resultBar');
+const resultDisclaimer = document.getElementById('resultDisclaimer');
+
+const stageStates = ['examples', 'preview', 'loading', 'result'];
+
 function t() { return (window.__i18n && window.__i18n.t) || {}; }
 function base() { return (window.__i18n && window.__i18n.base) || ''; }
 
+function setStage(state) {
+  if (!stageStates.includes(state)) return;
+  stage.dataset.state = state;
+  const showSample = (state === 'preview' || state === 'loading');
+  sampleImg.style.display = showSample ? 'block' : 'none';
+  sampleTag.style.display = showSample ? 'inline-block' : 'none';
+  resultImg.style.display = state === 'result' && resultImg.src ? 'block' : 'none';
+  previewHint.style.display = state === 'preview' ? 'block' : 'none';
+  loadingHint.style.display = state === 'loading' ? 'block' : 'none';
+  resultBar.style.display = state === 'result' ? 'flex' : 'none';
+  resultDisclaimer.style.display = state === 'result' ? 'block' : 'none';
+}
+
+// 画布中的效果图跟随当前模式 + 所选风格
+function updateSample() {
+  if (currentMode === 'tattoo') sampleImg.src = '/examples/tattoo/' + presets.tattoo + '.jpg';
+  else if (currentMode === 'hairstyle') sampleImg.src = '/examples/hair/' + presets.hair + '.jpg';
+  else sampleImg.src = '/examples/baby/baby.jpg';
+}
+updateSample();
+
 function switchMode(mode) {
   currentMode = mode;
-  document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  document.querySelectorAll('.mode-tab').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
   document.querySelectorAll('.mode-panel').forEach(p => p.style.display = 'none');
   document.getElementById('mode-' + mode).style.display = 'block';
-  document.getElementById('result').classList.remove('show');
-  document.getElementById('error').style.display = 'none';
+  stage.dataset.mode = mode;
+  errorEl.style.display = 'none';
+  updateGenerateBtn();
+  setStage('examples');
+  updateSample();
+}
+window.switchMode = switchMode;
+
+// 当前模式是否满足生成条件
+function modeReady() {
+  if (currentMode === 'tattoo') return true; // 照片可选，还可纯文字描述
+  if (currentMode === 'baby') return !!(files.baby1 && files.baby2);
+  return !!files.hair;
+}
+
+function updateGenerateBtn() {
+  generateBtn.disabled = !modeReady();
 }
 
 // 通用上传绑定
-function setupUpload(zoneId, inputId, fileKey, previewId, imgId) {
+function setupUpload(zoneId, inputId, fileKey) {
   const zone = document.getElementById(zoneId);
   const input = document.getElementById(inputId);
-  const preview = document.getElementById(previewId);
-  const img = document.getElementById(imgId);
+  const chip = document.getElementById('preview' + fileKey.charAt(0).toUpperCase() + fileKey.slice(1));
+  const thumb = document.getElementById('previewImg' + fileKey.charAt(0).toUpperCase() + fileKey.slice(1));
 
   zone.addEventListener('click', () => input.click());
   zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
@@ -28,15 +77,15 @@ function setupUpload(zoneId, inputId, fileKey, previewId, imgId) {
     e.preventDefault();
     zone.classList.remove('dragover');
     const f = e.dataTransfer.files[0];
-    if (f) handleFile(f, fileKey, preview, img);
+    if (f) handleFile(f, fileKey, chip, thumb);
   });
   input.addEventListener('change', () => {
     const f = input.files[0];
-    if (f) handleFile(f, fileKey, preview, img);
+    if (f) handleFile(f, fileKey, chip, thumb);
   });
 }
 
-async function handleFile(file, key, previewEl, imgEl) {
+async function handleFile(file, key, chipEl, thumbEl) {
   const tr = t();
   if (!file.type.startsWith('image/')) {
     showError(tr.errType || 'Please upload an image.');
@@ -47,44 +96,42 @@ async function handleFile(file, key, previewEl, imgEl) {
     return;
   }
 
-  // 压缩到 512x512 以内
-  const compressed = await compressImage(file, 512, 'image/png');
+  const compressed = await compressImage(file, 512);
   files[key] = compressed;
-  imgEl.src = URL.createObjectURL(compressed);
-  previewEl.style.display = 'block';
+  thumbEl.src = URL.createObjectURL(compressed);
+  chipEl.style.display = 'flex';
+  errorEl.style.display = 'none';
+  updateGenerateBtn();
+  if (key === modeFileKey()) setStage('preview');
 }
 
-function compressImage(file, maxSize, outputType = 'image/png') {
+function modeFileKey() {
+  if (currentMode === 'tattoo') return 'tattoo';
+  if (currentMode === 'baby') return null; // 需要两张，不单独切画布
+  return 'hair';
+}
+
+function compressImage(file, maxSize) {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
         let { width, height } = img;
-
-        // 强制缩放
         if (width > maxSize || height > maxSize) {
-          if (width > height) {
-            height = Math.round((height / width) * maxSize);
-            width = maxSize;
-          } else {
-            width = Math.round((width / height) * maxSize);
-            height = maxSize;
-          }
+          if (width > height) { height = Math.round((height / width) * maxSize); width = maxSize; }
+          else { width = Math.round((width / height) * maxSize); height = maxSize; }
         }
-
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        // 填充白色背景（防止透明 PNG 变黑）
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, width, height);
         ctx.drawImage(img, 0, 0, width, height);
-
         canvas.toBlob((blob) => {
-          resolve(new File([blob], 'image.png', { type: outputType }));
-        }, outputType, 0.9); // 0.9 是 JPEG 质量，对 PNG 无效，但保留
+          resolve(new File([blob], 'image.png', { type: 'image/png' }));
+        }, 'image/png');
       };
       img.src = e.target.result;
     };
@@ -94,48 +141,62 @@ function compressImage(file, maxSize, outputType = 'image/png') {
 
 function clearImage(key) {
   files[key] = null;
-  const map = {
-    tattoo: ['previewTattoo'],
-    baby1: ['previewBaby1'],
-    baby2: ['previewBaby2'],
-    hair: ['previewHair']
-  };
-  const previewId = map[key][0];
-  document.getElementById(previewId).style.display = 'none';
+  const map = { tattoo: 'previewTattoo', baby1: 'previewBaby1', baby2: 'previewBaby2', hair: 'previewHair' };
+  document.getElementById(map[key]).style.display = 'none';
+  if (resultImg) resultImg.removeAttribute('src');
+  updateGenerateBtn();
+  if (currentMode === 'tattoo' && key === 'tattoo') setStage('examples');
+  if (currentMode === 'hairstyle' && key === 'hair') setStage('examples');
+  if (currentMode === 'baby' && !files.baby1 && !files.baby2) setStage('examples');
 }
+window.clearImage = clearImage;
 
-// 预设按钮绑定
+// 预设按钮与示例卡绑定
 document.addEventListener('DOMContentLoaded', () => {
-  setupUpload('uploadZoneTattoo', 'fileTattoo', 'tattoo', 'previewTattoo', 'previewImgTattoo');
-  setupUpload('uploadZoneBaby1', 'fileBaby1', 'baby1', 'previewBaby1', 'previewImgBaby1');
-  setupUpload('uploadZoneBaby2', 'fileBaby2', 'baby2', 'previewBaby2', 'previewImgBaby2');
-  setupUpload('uploadZoneHair', 'fileHair', 'hair', 'previewHair', 'previewImgHair');
+  setupUpload('uploadZoneTattoo', 'fileTattoo', 'tattoo');
+  setupUpload('uploadZoneBaby1', 'fileBaby1', 'baby1');
+  setupUpload('uploadZoneBaby2', 'fileBaby2', 'baby2');
+  setupUpload('uploadZoneHair', 'fileHair', 'hair');
 
   document.querySelectorAll('#tattooPresets .preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#tattooPresets .preset-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      presets.tattoo = btn.dataset.preset;
-    });
+    btn.addEventListener('click', () => selectPreset('tattoo', btn.dataset.preset));
   });
   document.querySelectorAll('#hairPresets .preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('#hairPresets .preset-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      presets.hair = btn.dataset.preset;
-    });
+    btn.addEventListener('click', () => selectPreset('hairstyle', btn.dataset.preset));
   });
+
+  // 右侧示例卡：点图即选风格
+  document.querySelectorAll('#exTattoo .ex-card[data-preset]').forEach(card => {
+    card.addEventListener('click', () => selectPreset('tattoo', card.dataset.preset));
+  });
+  document.querySelectorAll('#exHair .ex-card[data-preset]').forEach(card => {
+    card.addEventListener('click', () => selectPreset('hairstyle', card.dataset.preset));
+  });
+
+  updateGenerateBtn();
 });
+
+function selectPreset(mode, preset) {
+  presets[mode] = preset;
+  const gridId = mode === 'tattoo' ? 'tattooPresets' : 'hairPresets';
+  document.querySelectorAll('#' + gridId + ' .preset-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.preset === preset));
+  document.querySelectorAll('#' + (mode === 'tattoo' ? 'exTattoo' : 'exHair') + ' .ex-card').forEach(c =>
+    c.classList.toggle('active', c.dataset.preset === preset));
+  updateSample();
+  if (stage.dataset.state === 'result') setStage('preview');
+}
+
+function backToPreview() {
+  if (modeReady() && (files.tattoo || files.hair || (files.baby1 && files.baby2))) setStage('preview');
+  else setStage('examples');
+}
+window.backToPreview = backToPreview;
 
 async function generate() {
   const tr = t();
-  const btn = document.getElementById('generateBtn');
-  const loadingEl = document.getElementById('loading');
-  const errorEl = document.getElementById('error');
-  const resultEl = document.getElementById('result');
 
   errorEl.style.display = 'none';
-  resultEl.classList.remove('show');
 
   const formData = new FormData();
   formData.append('mode', currentMode);
@@ -164,8 +225,8 @@ async function generate() {
     formData.append('preset', presets.hair);
   }
 
-  btn.disabled = true;
-  loadingEl.style.display = 'flex';
+  generateBtn.disabled = true;
+  setStage('loading');
 
   try {
     const res = await fetch(base() + '/api/generate', {
@@ -174,29 +235,33 @@ async function generate() {
     });
 
     if (res.status === 429) {
+      setStage('preview');
       showError(tr.errRateLimit || 'Too many requests. Please wait a minute.');
       return;
     }
 
     const data = await res.json();
     if (!res.ok || !data.image) {
+      setStage('preview');
       showError(data.error || (tr.errGeneric || 'Generation failed.'));
       return;
     }
 
-    document.getElementById('resultImg').src = 'data:image/png;base64,' + data.image;
-    resultEl.classList.add('show');
+    resultImg.src = 'data:image/png;base64,' + data.image;
+    setStage('result');
+    if (window.innerWidth <= 900) stage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   } catch (err) {
     console.error(err);
+    setStage('preview');
     showError(tr.errNetwork || 'Network error. Please try again.');
   } finally {
-    btn.disabled = false;
-    loadingEl.style.display = 'none';
+    generateBtn.disabled = false;
   }
 }
 
 function downloadResult() {
-  const img = document.getElementById('resultImg');
+  const img = resultImg;
+  if (!img.src) return;
   const a = document.createElement('a');
   a.href = img.src;
   a.download = 'ai-creative-' + Date.now() + '.png';
@@ -206,12 +271,9 @@ function downloadResult() {
 }
 
 function showError(msg) {
-  const el = document.getElementById('error');
-  el.textContent = msg;
-  el.style.display = 'block';
+  errorEl.textContent = msg;
+  errorEl.style.display = 'block';
 }
 
-window.switchMode = switchMode;
 window.generate = generate;
 window.downloadResult = downloadResult;
-window.clearImage = clearImage;

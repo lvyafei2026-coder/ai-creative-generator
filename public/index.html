@@ -15,6 +15,7 @@
 <link rel="alternate" hreflang="x-default" href="https://creative.toolara.dev/">
 
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="AI Creative Generator">
 <meta property="og:title" content="AI Creative Generator — Tattoo, Baby & Hairstyle Preview">
 <meta property="og:description" content="Preview tattoos, imagine your future baby, or try on new hairstyles.">
 <meta property="og:url" content="https://creative.toolara.dev/">
@@ -31,10 +32,49 @@
   "@type": "WebApplication",
   "name": "AI Creative Generator",
   "url": "https://creative.toolara.dev/",
-  "applicationCategory": "UtilityApplication",
+  "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any",
-  "description": "Free AI tool for tattoo preview, baby prediction, and hairstyle simulation.",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  "description": "Free AI tool for tattoo preview, baby prediction, and hairstyle simulation, all from a single photo upload.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "Tattoo preview: 6 styles from a body photo or a text description",
+    "Baby prediction: AI-blended baby portrait from two parent photos",
+    "Hairstyle try-on: 8 hairstyles on a selfie",
+    "No signup, no watermark"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is this tool free?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. It runs on Cloudflare Workers AI with a free daily quota. Normal use won't hit limits." }
+    },
+    {
+      "@type": "Question",
+      "name": "Are my photos stored?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Photos are processed in memory and discarded immediately after the result is generated. Nothing is stored, logged, or used for training." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is the baby prediction accurate?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Baby prediction is purely for entertainment. It does not use genetics and has no medical or scientific basis. It simply blends facial features in a visually plausible way." }
+    },
+    {
+      "@type": "Question",
+      "name": "What image format works best?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Clear, well-lit photos with the face or body part clearly visible. Front-facing portraits work best for hairstyle and baby modes. Avoid blurry, low-light, or heavily filtered images." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use the result commercially?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. The tool doesn't add watermarks. You own the result, but make sure you have the rights to the original photos." }
+    }
+  ]
 }
 </script>
 
@@ -69,173 +109,381 @@
 @media(max-width:640px){.site-footer-grid{grid-template-columns:1fr !important;gap:26px !important}}
 </style></head>
 <body>
-<header class="site-header"><div class="site-header-inner"><a class="site-brand" href="/" aria-label="ai-creative-generator"><span class="site-brand-mark" aria-hidden="true">CG</span><span class="site-brand-name" data-i18n="title"></span></a><nav class="site-nav" aria-label="Site navigation"><select id="langSelect" onchange="setLang(this.value)" aria-label="Language">
+<header class="site-header"><div class="site-header-inner"><a class="site-brand" href="/" aria-label="AI Creative Generator"><span class="site-brand-mark" aria-hidden="true">CG</span><span class="site-brand-name" data-i18n="title"></span></a><nav class="site-nav" aria-label="Site navigation"><select id="langSelect" onchange="setLang(this.value)" aria-label="Language">
       <option value="en">English</option>
       <option value="zh">简体中文</option>
     </select></nav></div></header>
 
 
 <header class="hero">
-
   <div class="hero-inner">
-    <div class="hero-badge">🎨 AI-powered</div>
-    <h1 data-i18n="title">AI Creative Generator</h1>
+    <div class="hero-badge" data-i18n="badge">🎨 Tattoo · Baby · Hairstyle</div>
+    <h1 data-i18n="h1">AI Creative Generator</h1>
     <p data-i18n="subtitle">Preview tattoos, imagine your future baby, or try on new hairstyles — all from one upload.</p>
+    <ul class="trust-bar">
+      <li data-i18n="trustSignup">No signup</li>
+      <li data-i18n="trustWatermark">No watermark</li>
+      <li data-i18n="trustFree">Free daily quota</li>
+      <li data-i18n="trustPrivate">Photos not stored</li>
+    </ul>
   </div>
 </header>
 
 <main class="wrap">
-  <section class="card">
-    <h2 class="visually-hidden" data-i18n="calcHeading">Creative generator</h2>
+  <div class="studio">
+    <section class="card">
+      <h2 class="visually-hidden" data-i18n="calcHeading">Creative generator</h2>
 
-    <div class="mode-tabs">
-      <button class="mode-tab active" data-mode="tattoo" onclick="switchMode('tattoo')" data-i18n="modeTattoo">🎨 Tattoo</button>
-      <button class="mode-tab" data-mode="baby" onclick="switchMode('baby')" data-i18n="modeBaby">👶 Baby</button>
-      <button class="mode-tab" data-mode="hairstyle" onclick="switchMode('hairstyle')" data-i18n="modeHair">💇 Hairstyle</button>
-    </div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="tattoo" onclick="switchMode('tattoo')" data-i18n="modeTattoo">🎨 Tattoo</button>
+        <button class="mode-tab" data-mode="baby" onclick="switchMode('baby')" data-i18n="modeBaby">👶 Baby</button>
+        <button class="mode-tab" data-mode="hairstyle" onclick="switchMode('hairstyle')" data-i18n="modeHair">💇 Hairstyle</button>
+      </div>
 
-    <!-- Tattoo -->
-    <div id="mode-tattoo" class="mode-panel">
-      <p class="mode-desc" data-i18n="descTattoo">Upload a body photo (optional) and pick a tattoo style.</p>
+      <!-- Tattoo -->
+      <div id="mode-tattoo" class="mode-panel">
+        <p class="mode-desc" data-i18n="descTattoo">Upload a body photo (optional) and pick a tattoo style.</p>
 
-      <label data-i18n="uploadOptional">Body photo (optional)</label>
-      <div class="upload-zone" id="uploadZoneTattoo">
-        <input type="file" id="fileTattoo" accept="image/*" style="display:none;">
-        <div class="upload-content">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text" data-i18n="uploadClick">Click to upload or drag here</div>
-          <div class="upload-hint" data-i18n="uploadHint">JPG or PNG · Max 5MB</div>
+        <label data-i18n="uploadOptional">Body photo (optional)</label>
+        <div class="upload-zone" id="uploadZoneTattoo">
+          <input type="file" id="fileTattoo" accept="image/*" style="display:none;">
+          <div class="upload-content">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text" data-i18n="uploadClick">Click to upload or drag here</div>
+            <div class="upload-hint" data-i18n="uploadHint">JPG or PNG · Max 5MB</div>
+          </div>
+        </div>
+        <div class="file-chip" id="previewTattoo" style="display:none;">
+          <img id="previewImgTattoo" alt="Selected body photo thumbnail">
+          <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
+          <button class="chip-remove" type="button" onclick="clearImage('tattoo')" aria-label="Remove photo">✕</button>
+        </div>
+
+        <label data-i18n="styleLabel">Tattoo style</label>
+        <div class="preset-grid" id="tattooPresets">
+          <button class="preset-btn active" data-preset="minimalist" data-i18n="presetMinimalist">Minimalist</button>
+          <button class="preset-btn" data-preset="geometric" data-i18n="presetGeometric">Geometric</button>
+          <button class="preset-btn" data-preset="watercolor" data-i18n="presetWatercolor">Watercolor</button>
+          <button class="preset-btn" data-preset="traditional" data-i18n="presetTraditional">Traditional</button>
+          <button class="preset-btn" data-preset="japanese" data-i18n="presetJapanese">Japanese</button>
+          <button class="preset-btn" data-preset="script" data-i18n="presetScript">Script</button>
+        </div>
+
+        <label for="promptTattoo" data-i18n="promptOptional">Custom description (optional)</label>
+        <input type="text" id="promptTattoo" placeholder="e.g. A lion with geometric shapes">
+      </div>
+
+      <!-- Baby -->
+      <div id="mode-baby" class="mode-panel" style="display:none;">
+        <p class="mode-desc" data-i18n="descBaby">Upload photos of both parents to imagine a future baby.</p>
+
+        <label data-i18n="parent1">Parent 1 photo</label>
+        <div class="upload-zone" id="uploadZoneBaby1">
+          <input type="file" id="fileBaby1" accept="image/*" style="display:none;">
+          <div class="upload-content">
+            <div class="upload-icon">👤</div>
+            <div class="upload-text" data-i18n="uploadClick">Click to upload</div>
+          </div>
+        </div>
+        <div class="file-chip" id="previewBaby1" style="display:none;">
+          <img id="previewImgBaby1" alt="Parent 1 thumbnail">
+          <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
+          <button class="chip-remove" type="button" onclick="clearImage('baby1')" aria-label="Remove photo">✕</button>
+        </div>
+
+        <label data-i18n="parent2">Parent 2 photo</label>
+        <div class="upload-zone" id="uploadZoneBaby2">
+          <input type="file" id="fileBaby2" accept="image/*" style="display:none;">
+          <div class="upload-content">
+            <div class="upload-icon">👤</div>
+            <div class="upload-text" data-i18n="uploadClick">Click to upload</div>
+          </div>
+        </div>
+        <div class="file-chip" id="previewBaby2" style="display:none;">
+          <img id="previewImgBaby2" alt="Parent 2 thumbnail">
+          <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
+          <button class="chip-remove" type="button" onclick="clearImage('baby2')" aria-label="Remove photo">✕</button>
         </div>
       </div>
-      <div class="preview" id="previewTattoo" style="display:none;">
-        <img id="previewImgTattoo" alt="Preview">
-        <button class="remove-btn" onclick="clearImage('tattoo')">✕</button>
-      </div>
 
-      <label data-i18n="styleLabel">Tattoo style</label>
-      <div class="preset-grid" id="tattooPresets">
-        <button class="preset-btn active" data-preset="minimalist">Minimalist</button>
-        <button class="preset-btn" data-preset="geometric">Geometric</button>
-        <button class="preset-btn" data-preset="watercolor">Watercolor</button>
-        <button class="preset-btn" data-preset="traditional">Traditional</button>
-        <button class="preset-btn" data-preset="japanese">Japanese</button>
-        <button class="preset-btn" data-preset="script">Script</button>
-      </div>
+      <!-- Hairstyle -->
+      <div id="mode-hairstyle" class="mode-panel" style="display:none;">
+        <p class="mode-desc" data-i18n="descHair">Upload a selfie and pick a hairstyle to try on.</p>
 
-      <label for="promptTattoo" data-i18n="promptOptional">Custom description (optional)</label>
-      <input type="text" id="promptTattoo" placeholder="e.g. A lion with geometric shapes">
-    </div>
+        <label data-i18n="selfieLabel">Your photo</label>
+        <div class="upload-zone" id="uploadZoneHair">
+          <input type="file" id="fileHair" accept="image/*" style="display:none;">
+          <div class="upload-content">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text" data-i18n="uploadClick">Click to upload or drag here</div>
+            <div class="upload-hint" data-i18n="uploadHintSelfie">Front-facing portrait works best</div>
+          </div>
+        </div>
+        <div class="file-chip" id="previewHair" style="display:none;">
+          <img id="previewImgHair" alt="Selected selfie thumbnail">
+          <span data-i18n="fileReady">Photo ready — pick a style and generate</span>
+          <button class="chip-remove" type="button" onclick="clearImage('hair')" aria-label="Remove photo">✕</button>
+        </div>
 
-    <!-- Baby -->
-    <div id="mode-baby" class="mode-panel" style="display:none;">
-      <p class="mode-desc" data-i18n="descBaby">Upload photos of both parents to imagine a future baby.</p>
-
-      <label data-i18n="parent1">Parent 1 photo</label>
-      <div class="upload-zone" id="uploadZoneBaby1">
-        <input type="file" id="fileBaby1" accept="image/*" style="display:none;">
-        <div class="upload-content">
-          <div class="upload-icon">👤</div>
-          <div class="upload-text" data-i18n="uploadClick">Click to upload</div>
+        <label data-i18n="hairStyleLabel">Choose a hairstyle</label>
+        <div class="preset-grid" id="hairPresets">
+          <button class="preset-btn active" data-preset="short_messy" data-i18n="presetShortMessy">Short messy</button>
+          <button class="preset-btn" data-preset="medium_wavy" data-i18n="presetMediumWavy">Medium wavy</button>
+          <button class="preset-btn" data-preset="long_straight" data-i18n="presetLongStraight">Long straight</button>
+          <button class="preset-btn" data-preset="buzz_cut" data-i18n="presetBuzzCut">Buzz cut</button>
+          <button class="preset-btn" data-preset="bob" data-i18n="presetBob">Bob</button>
+          <button class="preset-btn" data-preset="curly" data-i18n="presetCurly">Curly</button>
+          <button class="preset-btn" data-preset="pixie" data-i18n="presetPixie">Pixie</button>
+          <button class="preset-btn" data-preset="ponytail" data-i18n="presetPonytail">Ponytail</button>
         </div>
       </div>
-      <div class="preview" id="previewBaby1" style="display:none;">
-        <img id="previewImgBaby1" alt="Parent 1">
-        <button class="remove-btn" onclick="clearImage('baby1')">✕</button>
-      </div>
 
-      <label data-i18n="parent2">Parent 2 photo</label>
-      <div class="upload-zone" id="uploadZoneBaby2">
-        <input type="file" id="fileBaby2" accept="image/*" style="display:none;">
-        <div class="upload-content">
-          <div class="upload-icon">👤</div>
-          <div class="upload-text" data-i18n="uploadClick">Click to upload</div>
+      <button class="calc" type="button" id="generateBtn" onclick="generate()" data-i18n="calcBtn">Generate</button>
+
+      <div id="error" class="error" style="display:none;"></div>
+    </section>
+
+    <section class="card stage" id="stage" data-state="examples" data-mode="tattoo">
+      <div class="ex-view">
+        <div class="ex-head">
+          <h2 class="ex-title" data-i18n="exTitle">Style examples</h2>
+          <p class="ex-hint" data-i18n="exHint">Real outputs from this tool — click one to pick that style.</p>
+        </div>
+
+        <div class="ex-grid" id="exTattoo">
+          <button class="ex-card active" data-preset="minimalist" type="button">
+            <img src="/examples/tattoo/minimalist.jpg" alt="Minimalist tattoo example: a fine line tattoo on a collarbone" width="640" height="640">
+            <span class="ex-label" data-i18n="presetMinimalist">Minimalist</span>
+          </button>
+          <button class="ex-card" data-preset="geometric" type="button">
+            <img src="/examples/tattoo/geometric.jpg" alt="Geometric tattoo example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetGeometric">Geometric</span>
+          </button>
+          <button class="ex-card" data-preset="watercolor" type="button">
+            <img src="/examples/tattoo/watercolor.jpg" alt="Watercolor tattoo example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetWatercolor">Watercolor</span>
+          </button>
+          <button class="ex-card" data-preset="traditional" type="button">
+            <img src="/examples/tattoo/traditional.jpg" alt="American traditional tattoo example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetTraditional">Traditional</span>
+          </button>
+          <button class="ex-card" data-preset="japanese" type="button">
+            <img src="/examples/tattoo/japanese.jpg" alt="Japanese irezumi tattoo example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetJapanese">Japanese</span>
+          </button>
+          <button class="ex-card" data-preset="script" type="button">
+            <img src="/examples/tattoo/script.jpg" alt="Script lettering tattoo example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetScript">Script</span>
+          </button>
+        </div>
+
+        <div class="ex-grid" id="exBaby">
+          <div class="ex-card static">
+            <img src="/examples/baby/baby.jpg" alt="Baby prediction example: an AI-blended baby portrait from two parent photos" width="640" height="640">
+            <span class="ex-label" data-i18n="modeBaby">👶 Baby</span>
+          </div>
+          <div class="ex-card static">
+            <img src="/examples/woman.jpg" alt="Parent 1 example photo" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="parent1">Parent 1 photo</span>
+          </div>
+          <div class="ex-card static">
+            <img src="/examples/man.jpg" alt="Parent 2 example photo" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="parent2">Parent 2 photo</span>
+          </div>
+        </div>
+
+        <div class="ex-grid" id="exHair">
+          <button class="ex-card" data-preset="short_messy" type="button">
+            <img src="/examples/hair/short_messy.jpg" alt="Short messy haircut example" width="640" height="640">
+            <span class="ex-label" data-i18n="presetShortMessy">Short messy</span>
+          </button>
+          <button class="ex-card" data-preset="medium_wavy" type="button">
+            <img src="/examples/hair/medium_wavy.jpg" alt="Medium wavy haircut example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetMediumWavy">Medium wavy</span>
+          </button>
+          <button class="ex-card" data-preset="long_straight" type="button">
+            <img src="/examples/hair/long_straight.jpg" alt="Long straight haircut example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetLongStraight">Long straight</span>
+          </button>
+          <button class="ex-card" data-preset="buzz_cut" type="button">
+            <img src="/examples/hair/buzz_cut.jpg" alt="Buzz cut example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetBuzzCut">Buzz cut</span>
+          </button>
+          <button class="ex-card" data-preset="bob" type="button">
+            <img src="/examples/hair/bob.jpg" alt="Chin-length bob haircut example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetBob">Bob</span>
+          </button>
+          <button class="ex-card" data-preset="curly" type="button">
+            <img src="/examples/hair/curly.jpg" alt="Voluminous curly haircut example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetCurly">Curly</span>
+          </button>
+          <button class="ex-card" data-preset="pixie" type="button">
+            <img src="/examples/hair/pixie.jpg" alt="Pixie cut example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetPixie">Pixie</span>
+          </button>
+          <button class="ex-card" data-preset="ponytail" type="button">
+            <img src="/examples/hair/ponytail.jpg" alt="Sleek high ponytail example" width="640" height="640" loading="lazy">
+            <span class="ex-label" data-i18n="presetPonytail">Ponytail</span>
+          </button>
         </div>
       </div>
-      <div class="preview" id="previewBaby2" style="display:none;">
-        <img id="previewImgBaby2" alt="Parent 2">
-        <button class="remove-btn" onclick="clearImage('baby2')">✕</button>
-      </div>
-    </div>
 
-    <!-- Hairstyle -->
-    <div id="mode-hairstyle" class="mode-panel" style="display:none;">
-      <p class="mode-desc" data-i18n="descHair">Upload a selfie and pick a hairstyle to try on.</p>
-
-      <label data-i18n="selfieLabel">Your photo</label>
-      <div class="upload-zone" id="uploadZoneHair">
-        <input type="file" id="fileHair" accept="image/*" style="display:none;">
-        <div class="upload-content">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text" data-i18n="uploadClick">Click to upload or drag here</div>
-          <div class="upload-hint" data-i18n="uploadHint">Front-facing portrait works best</div>
+      <div class="stage-canvas-wrap">
+        <div class="stage-canvas">
+          <img id="sampleImg" alt="Style example preview" style="display:none;">
+          <span class="sample-tag" id="sampleTag" data-i18n="sampleTag" style="display:none;">Style preview</span>
+          <img id="resultImg" alt="Generated result" style="display:none;">
+          <div class="canvas-spinner" id="loading">
+            <div class="spinner"></div>
+            <div data-i18n="loadingText">Generating your image... (10-30 seconds)</div>
+          </div>
         </div>
+        <div class="stage-bar">
+          <p class="stage-hint" id="previewHint" data-i18n="previewHint" style="display:none;">Photo loaded — press Generate</p>
+          <p class="stage-hint" id="loadingHint" data-i18n="loadingText" style="display:none;">Generating your image... (10-30 seconds)</p>
+          <div id="resultBar" class="stage-bar-row" style="display:none;">
+            <span class="result-label" data-i18n="resultLabel">Result</span>
+            <button class="copy-btn" type="button" onclick="downloadResult()" data-i18n="downloadBtn">Download</button>
+            <button class="back-btn" type="button" onclick="backToPreview()" data-i18n="backToPhoto">← Back to photo</button>
+          </div>
+        </div>
+        <p class="result-disclaimer" id="resultDisclaimer" data-i18n="resultDisclaimer" style="display:none;">AI-generated image. Results are for entertainment only. Baby predictions have no medical or genetic basis.</p>
       </div>
-      <div class="preview" id="previewHair" style="display:none;">
-        <img id="previewImgHair" alt="Preview">
-        <button class="remove-btn" onclick="clearImage('hair')">✕</button>
-      </div>
+    </section>
+  </div>
 
-      <label data-i18n="hairStyleLabel">Choose a hairstyle</label>
-      <div class="preset-grid" id="hairPresets">
-        <button class="preset-btn active" data-preset="short_messy">Short messy</button>
-        <button class="preset-btn" data-preset="medium_wavy">Medium wavy</button>
-        <button class="preset-btn" data-preset="long_straight">Long straight</button>
-        <button class="preset-btn" data-preset="buzz_cut">Buzz cut</button>
-        <button class="preset-btn" data-preset="bob">Bob</button>
-        <button class="preset-btn" data-preset="curly">Curly</button>
-        <button class="preset-btn" data-preset="pixie">Pixie</button>
-        <button class="preset-btn" data-preset="ponytail">Ponytail</button>
-      </div>
-    </div>
-
-    <button class="calc" type="button" id="generateBtn" onclick="generate()" data-i18n="calcBtn">Generate</button>
-
-    <div id="loading" class="loading" style="display:none;">
-      <div class="spinner"></div>
-      <div data-i18n="loadingText">Generating your image... (10-30 seconds)</div>
-    </div>
-
-    <div id="error" class="error" style="display:none;"></div>
-
-    <div id="result" role="region" aria-live="polite">
-      <div class="result-header">
-        <div class="result-label" data-i18n="resultLabel">Result</div>
-        <button class="copy-btn" type="button" onclick="downloadResult()" data-i18n="downloadBtn">Download</button>
-      </div>
-      <div class="result-preview">
-        <img id="resultImg" alt="Result">
-      </div>
-      <div class="result-disclaimer" data-i18n="resultDisclaimer">AI-generated image. Results are for entertainment only. Baby predictions have no medical or genetic basis.</div>
+  <section class="proof">
+    <h2 data-i18n="proofTitle">One photo, every preview</h2>
+    <p class="proof-sub" data-i18n="proofSub">Every image below was generated from the same uploaded photo by this tool. No mockups, no Photoshop.</p>
+    <div class="proof-grid">
+      <figure class="proof-item">
+        <div class="proof-pair">
+          <div class="proof-cell"><img src="/examples/woman.jpg" alt="Original uploaded portrait photo of a woman" width="640" height="640" loading="lazy"><span data-i18n="proofBefore">Your photo</span></div>
+          <div class="proof-arrow" aria-hidden="true">→</div>
+          <div class="proof-cell"><img src="/examples/tattoo/minimalist.jpg" alt="Result: the woman with a fine line tattoo on her collarbone" width="640" height="640" loading="lazy"><span data-i18n="proofTattoo">Tattoo preview</span></div>
+        </div>
+      </figure>
+      <figure class="proof-item">
+        <div class="proof-pair">
+          <div class="proof-cell"><img src="/examples/woman.jpg" alt="Original uploaded portrait photo of a woman" width="640" height="640" loading="lazy"><span data-i18n="proofBefore">Your photo</span></div>
+          <div class="proof-arrow" aria-hidden="true">→</div>
+          <div class="proof-cell"><img src="/examples/hair/bob.jpg" alt="Result: the woman with a chin-length bob haircut" width="640" height="640" loading="lazy"><span data-i18n="proofHair">Hairstyle try-on</span></div>
+        </div>
+      </figure>
+      <figure class="proof-item">
+        <div class="proof-pair">
+          <div class="proof-cell"><div class="proof-duo"><img src="/examples/woman.jpg" alt="Parent 1 example photo" width="320" height="320" loading="lazy"><img src="/examples/man.jpg" alt="Parent 2 example photo" width="320" height="320" loading="lazy"></div><span data-i18n="proofParents">Both parents</span></div>
+          <div class="proof-arrow" aria-hidden="true">→</div>
+          <div class="proof-cell"><img src="/examples/baby/baby.jpg" alt="Result: an AI-imagined baby blending both parents" width="640" height="640" loading="lazy"><span data-i18n="proofBaby">Baby prediction</span></div>
+        </div>
+      </figure>
     </div>
   </section>
 
-  <section>
+  <section class="prose wide">
+    <h2 data-i18n="howTitle">How it works</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-top"><span class="step-n">1</span><span class="how-icon" aria-hidden="true">🎭</span></div>
+        <h3 data-i18n="how1Title">Pick a mode</h3>
+        <p data-i18n="how1Text">Tattoo preview, baby prediction or hairstyle try-on — three tools, one generator.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-top"><span class="step-n">2</span><span class="how-icon" aria-hidden="true">📸</span></div>
+        <h3 data-i18n="how2Title">Upload a photo</h3>
+        <p data-i18n="how2Text">A clear, well-lit photo works best. Baby mode takes one photo from each parent; tattoo mode even works from a text description alone.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-top"><span class="step-n">3</span><span class="how-icon" aria-hidden="true">⬇️</span></div>
+        <h3 data-i18n="how3Title">Generate and download</h3>
+        <p data-i18n="how3Text">The image is ready in 10-30 seconds. Download it as a PNG — no watermark, no account, no email required.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="prose wide">
     <h2 data-i18n="whatIsTitle">What can you create?</h2>
-    <ul>
-      <li data-i18n="use1"><strong>Tattoo preview</strong> — Upload a body photo or start from scratch, pick a style, and see how a tattoo would look.</li>
-      <li data-i18n="use2"><strong>Baby prediction</strong> — Upload two parent photos and get an AI-imagined baby portrait. For fun only.</li>
-      <li data-i18n="use3"><strong>Hairstyle try-on</strong> — Upload a selfie and preview 8 different hairstyles before committing.</li>
-    </ul>
+    <p data-i18n="whatIsText">This generator runs three photo-to-image tools on the same engine. Pick a mode, upload a photo, and get a share-ready preview in seconds.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <span class="feat-icon" aria-hidden="true">🎨</span>
+        <div><h3 data-i18n="feat1Title">Tattoo preview, 6 styles</h3><p data-i18n="feat1Text">Minimalist fine line, geometric, watercolor, traditional, Japanese irezumi and script — on your own body photo.</p></div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon" aria-hidden="true">👶</span>
+        <div><h3 data-i18n="feat2Title">Baby prediction</h3><p data-i18n="feat2Text">Upload one photo from each parent and get an AI-imagined baby portrait. Purely for fun.</p></div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon" aria-hidden="true">💇</span>
+        <div><h3 data-i18n="feat3Title">Hairstyle try-on</h3><p data-i18n="feat3Text">Preview 8 hairstyles on your selfie — bob, buzz cut, curly, ponytail and more — before committing at the salon.</p></div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-icon" aria-hidden="true">🔒</span>
+        <div><h3 data-i18n="feat4Title">Photos not stored</h3><p data-i18n="feat4Text">Your photos are processed in memory and discarded right after the result is generated.</p></div>
+      </div>
+    </div>
   </section>
 
-  <section>
+  <section class="prose wide">
     <h2 data-i18n="faqTitle">Frequently asked questions</h2>
-    <h3 data-i18n="faq1q">Is this tool free?</h3>
-    <p data-i18n="faq1a">Yes. It runs on Cloudflare Workers AI with a free daily quota. Normal use won't hit limits.</p>
-
-    <h3 data-i18n="faq2q">Are my photos stored?</h3>
-    <p data-i18n="faq2a">No. Photos are processed in memory and discarded immediately after the result is generated. Nothing is stored, logged, or used for training.</p>
-
-    <h3 data-i18n="faq3q">Is the baby prediction accurate?</h3>
-    <p data-i18n="faq3a">No. Baby prediction is purely for entertainment. It does not use genetics and has no medical or scientific basis. It simply blends facial features in a visually plausible way.</p>
-
-    <h3 data-i18n="faq4q">Why does generation take 10-30 seconds?</h3>
-    <p data-i18n="faq4a">Image generation is computationally intensive. The model runs on Cloudflare's GPU infrastructure, and the time depends on load. Most generations complete in 10-20 seconds.</p>
-
-    <h3 data-i18n="faq5q">What image format works best?</h3>
-    <p data-i18n="faq5a">Clear, well-lit photos with the face or body part clearly visible. Front-facing portraits work best for hairstyle and baby modes. Avoid blurry, low-light, or heavily filtered images.</p>
+    <div class="faq-list">
+      <details class="faq-item" open>
+        <summary data-i18n="faq1q">Is this tool free?</summary>
+        <p data-i18n="faq1a">Yes. It runs on Cloudflare Workers AI with a free daily quota. Normal use won't hit limits.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="faq2q">Are my photos stored?</summary>
+        <p data-i18n="faq2a">No. Photos are processed in memory and discarded immediately after the result is generated. Nothing is stored, logged, or used for training.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="faq3q">Is the baby prediction accurate?</summary>
+        <p data-i18n="faq3a">No. Baby prediction is purely for entertainment. It does not use genetics and has no medical or scientific basis. It simply blends facial features in a visually plausible way.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="faq4q">Why does generation take 10-30 seconds?</summary>
+        <p data-i18n="faq4a">Image generation is computationally intensive. The model runs on Cloudflare's GPU infrastructure, and the time depends on load. Most generations complete in 10-20 seconds.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="faq5q">What image format works best?</summary>
+        <p data-i18n="faq5a">Clear, well-lit photos with the face or body part clearly visible. Front-facing portraits work best for hairstyle and baby modes. Avoid blurry, low-light, or heavily filtered images.</p>
+      </details>
+      <details class="faq-item">
+        <summary data-i18n="faq6q">Can I use the result commercially?</summary>
+        <p data-i18n="faq6a">Yes. The tool doesn't add watermarks. You own the result, but make sure you have the rights to the original photos.</p>
+      </details>
+    </div>
 
     <div class="disclaimer" data-i18n="disclaimer"><strong>Note:</strong> AI-generated images are for entertainment purposes only. Do not use them to make medical, cosmetic, or personal decisions.</div>
+  </section>
+
+  <section class="prose wide">
+    <h2 data-i18n="relatedTitle">More free image tools</h2>
+    <div class="related-grid">
+      <a class="related-card" href="https://background.toolara.dev/">
+        <span class="feat-icon" aria-hidden="true">✂️</span>
+        <div>
+          <h3 data-i18n="related1Title">Background remover</h3>
+          <p data-i18n="related1Text">Strip the background from any photo before you generate — no signup, no watermark.</p>
+        </div>
+        <span class="related-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="related-card" href="https://figurine.toolara.dev/">
+        <span class="feat-icon" aria-hidden="true">🧸</span>
+        <div>
+          <h3 data-i18n="related2Title">AI action figure generator</h3>
+          <p data-i18n="related2Text">Turn a photo into a boxed action figure, chibi or plush figurine — the sibling image tool.</p>
+        </div>
+        <span class="related-arrow" aria-hidden="true">→</span>
+      </a>
+      <a class="related-card" href="https://toolara.dev/free-ai-tools">
+        <span class="feat-icon" aria-hidden="true">📋</span>
+        <div>
+          <h3 data-i18n="related3Title">Free AI tools table</h3>
+          <p data-i18n="related3Text">Every Toolara tool's real free tier, documented in one comparison table.</p>
+        </div>
+        <span class="related-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
   </section>
 </main>
 
