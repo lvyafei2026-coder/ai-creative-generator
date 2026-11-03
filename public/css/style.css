@@ -9,7 +9,7 @@ html { scroll-behavior: smooth; }
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; -webkit-font-smoothing: antialiased; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
-.hero { position: relative; overflow: hidden; color: var(--text); padding: 36px 20px 66px;
+.hero { position: relative; overflow: hidden; color: var(--text); padding: 28px 20px 52px;
   background:
     radial-gradient(circle at 10% 16%, rgba(244,114,182,0.28) 0 56px, transparent 57px),
     radial-gradient(circle at 90% 20%, rgba(124,58,237,0.20) 0 74px, transparent 75px),
@@ -145,8 +145,6 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 /* ---- 三模式差异化主题（挂在 .studio[data-mode] 上） ---- */
 /* Baby：玫瑰粉 */
 .studio[data-mode="baby"] { --accent:#db2777; --accent-dark:#be185d; --border:#f3d9e6; --lav:#fce7f3; --shadow:0 2px 0 rgba(36,26,51,0.06), 0 14px 34px rgba(219,39,119,0.10); }
-.studio[data-mode="baby"] .mode-tabs { background: #fce7f3; }
-.studio[data-mode="baby"] .mode-tab.active { color: #be185d; }
 .studio[data-mode="baby"] .upload-zone { background: #fdf2f8; border-color: #f6aed1; }
 .studio[data-mode="baby"] .upload-zone:hover, .studio[data-mode="baby"] .upload-zone.dragover { border-color: var(--accent); background: #fce7f3; }
 .studio[data-mode="baby"] .file-chip { background: #fdf2f8; }
@@ -156,8 +154,6 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 /* Tattoo：暗色墨感 */
 .studio[data-mode="tattoo"] { --card:#171126; --text:#efe9fb; --muted:#9c91b8; --border:#2f2749; --accent:#a78bfa; --accent-dark:#8b5cf6; --lav:#241b3a; --shadow:0 2px 0 rgba(0,0,0,0.28), 0 14px 34px rgba(0,0,0,0.4); }
 .studio[data-mode="tattoo"] .card { color: var(--text); }
-.studio[data-mode="tattoo"] .mode-tabs { background: #241b3a; }
-.studio[data-mode="tattoo"] .mode-tab.active { background: #2f2749; color: #efe9fb; }
 .studio[data-mode="tattoo"] .upload-zone { background: #1f1833; border-color: #43355f; }
 .studio[data-mode="tattoo"] .upload-zone:hover, .studio[data-mode="tattoo"] .upload-zone.dragover { border-color: var(--accent); background: #241b3a; }
 .studio[data-mode="tattoo"] .file-chip { background: #1f1833; }
@@ -202,11 +198,29 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .mode-desc { font-size: 0.88rem; color: var(--muted); margin: 0 0 12px; }
 label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 6px; }
 
-/* Mode tabs：分段控件 */
-.mode-tabs { display: flex; gap: 6px; margin-bottom: 14px; background: var(--lav); padding: 4px; border-radius: 12px; }
-.mode-tab { flex: 1; padding: 10px 6px; border: 2px solid transparent; background: transparent; color: var(--muted); border-radius: 9px; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: all 0.15s; font-family: inherit; white-space: nowrap; }
-.mode-tab.active { background: #fff; color: var(--accent-dark); border-color: var(--border); box-shadow: 0 2px 0 rgba(36,26,51,0.06); }
-.mode-tab:hover:not(.active) { color: var(--accent-dark); }
+/* 左栏当前模式标识（切换器在 hero 环形导航） */
+.mode-current { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; font-size: 0.74rem; font-weight: 800; color: var(--muted); background: var(--lav); border-radius: 999px; padding: 5px 12px; margin-bottom: 12px; }
+.mode-current .mc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+/* ---- 环形功能导航（hero 右侧） ---- */
+.hero-shell { display: grid; grid-template-columns: minmax(0, 1fr) 288px; gap: 30px; align-items: center; max-width: 1000px; text-align: left; }
+.hero-copy h1, .hero-copy p { text-align: left; margin-left: 0; margin-right: 0; }
+.hero-copy .trust-bar { justify-content: flex-start; }
+.ring-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.mode-ring { position: relative; width: 250px; height: 250px; }
+.ring-orbit { position: absolute; inset: 16px; border: 1.5px dashed rgba(124,58,237,0.34); border-radius: 50%; }
+.ring-node { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; margin: -31px 0 0 -31px; padding: 0; border-radius: 50%; border: 2px solid var(--border); background: #fff; color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-family: inherit; box-shadow: 0 3px 0 rgba(36,26,51,0.08); transition: transform 0.55s cubic-bezier(0.45,0.05,0.35,1.2), background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; will-change: transform; }
+.ring-node-icon { font-size: 1.05rem; line-height: 1; }
+.ring-node-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.01em; }
+.ring-node:hover:not(.active) { border-color: #c4b5fd; }
+.ring-node.active[data-mode="tattoo"] { background: #3c3489; border-color: #3c3489; color: #fff; box-shadow: 0 5px 0 rgba(60,52,137,0.4); }
+.ring-node.active[data-mode="baby"] { background: #db2777; border-color: #db2777; color: #fff; box-shadow: 0 5px 0 rgba(219,39,119,0.38); }
+.ring-node.active[data-mode="hairstyle"] { background: #7c3aed; border-color: #7c3aed; color: #fff; box-shadow: 0 5px 0 rgba(109,40,217,0.42); }
+.ring-hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 106px; height: 106px; border-radius: 50%; background: #fff; border: 2px solid #7c3aed; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; text-align: center; padding: 6px; box-shadow: 0 4px 0 rgba(36,26,51,0.07); transition: border-color 0.25s; }
+.ring-hub-icon { font-size: 1.15rem; line-height: 1; }
+.ring-hub-name { font-size: 0.8rem; font-weight: 850; line-height: 1.15; }
+.ring-hub-zh { font-size: 0.6rem; font-weight: 700; color: var(--muted); line-height: 1.2; }
+.ring-tag { margin: 0; max-width: 260px; font-size: 0.76rem; line-height: 1.45; color: var(--muted); text-align: center; }
 
 input[type="text"] { width: 100%; padding: 11px 13px; border: 2px solid var(--border); border-radius: 11px; font-size: 0.95rem; margin-bottom: 4px; background: #fff; color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; font-family: inherit; }
 input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
@@ -260,7 +274,6 @@ li { margin-bottom: 8px; line-height: 1.65; }
   .hero h1 { font-size: 1.5rem; }
   .wrap { padding: 0 14px 48px; }
   .card { padding: 20px; }
-  .mode-tab { font-size: 0.78rem; padding: 9px 4px; }
   .preset-grid { grid-template-columns: repeat(2, 1fr); }
   .ex-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
 }
@@ -302,3 +315,13 @@ li { margin-bottom: 8px; line-height: 1.65; }
 .site-footer-bottom p { margin: 0; }
 @media (max-width: 960px) { .site-footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 34px; } .site-footer-column:first-child { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .site-footer { padding: 36px 20px 20px !important; } .site-footer-grid { grid-template-columns: 1fr; gap: 28px; } .site-footer-column:first-child { grid-column: auto; } .site-footer-links { gap: 10px 14px; } .site-footer-bottom { margin-top: 28px; } }
+
+@media (max-width: 900px) {
+  .hero-shell { grid-template-columns: 1fr; gap: 22px; text-align: center; }
+  .hero-copy h1, .hero-copy p { text-align: center; margin-left: auto; margin-right: auto; }
+  .hero-copy .trust-bar { justify-content: center; }
+  .mode-ring { width: 224px; height: 224px; }
+  .ring-hub { width: 96px; height: 96px; }
+  .ring-node { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
+  .ring-node-icon { font-size: 0.95rem; }
+}

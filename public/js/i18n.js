@@ -58,6 +58,7 @@ async function initPage() {
   const select = document.getElementById('langSelect');
   if (select) select.value = lang;
   window.__i18n = { t: translations, lang: currentLang, base: getBase() };
+  window.dispatchEvent(new Event('i18n-ready'));
 }
 
 function setLang(lang) {

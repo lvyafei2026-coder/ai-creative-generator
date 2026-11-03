@@ -105,5 +105,14 @@
   "errRateLimit": "请求太频繁，请稍等一分钟再试。",
   "uploadClickShort": "点击上传",
   "modeBabyLabel": "👶 宝宝预测",
-  "proofHair2": "换个风格"
+  "proofHair2": "换个风格",
+  "ringNameTattoo": "Tattoo",
+  "ringNameBaby": "Baby",
+  "ringNameHair": "Hairstyle",
+  "ringZhTattoo": "纹身预览",
+  "ringZhBaby": "宝宝预测",
+  "ringZhHair": "发型试戴",
+  "ringTagTattoo": "上传身体照片，预览 6 种纹身风格",
+  "ringTagBaby": "双亲照片合成宝宝长相，仅供娱乐",
+  "ringTagHair": "一张自拍试戴 8 种发型"
 }

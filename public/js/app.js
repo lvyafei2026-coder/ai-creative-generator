@@ -38,10 +38,59 @@ function updateSample() {
   else sampleImg.src = '/examples/baby/baby.jpg';
 }
 updateSample();
+document.addEventListener('DOMContentLoaded', () => { layoutRing(); updateRingInfo(); });
+window.addEventListener('load', () => { layoutRing(); updateRingInfo(); });
+window.addEventListener('resize', layoutRing);
+window.addEventListener('i18n-ready', updateRingInfo);
+
+const RING_META = {
+  tattoo:   { emoji: '🎨', nameKey: 'ringNameTattoo', zhKey: 'ringZhTattoo', tagKey: 'ringTagTattoo', labelKey: 'modeTattoo', color: '#3c3489' },
+  baby:     { emoji: '👶', nameKey: 'ringNameBaby',   zhKey: 'ringZhBaby',   tagKey: 'ringTagBaby',   labelKey: 'modeBaby',   color: '#db2777' },
+  hairstyle:{ emoji: '💇', nameKey: 'ringNameHair',   zhKey: 'ringZhHair',   tagKey: 'ringTagHair',   labelKey: 'modeHair',   color: '#7c3aed' }
+};
+const RING_ORDER = ['tattoo', 'baby', 'hairstyle'];
+
+// 环形导航布局：选中节点旋转到正上方，其余按 120° 均分
+function layoutRing() {
+  const ring = document.getElementById('modeRing');
+  if (!ring) return;
+  const nodes = [...ring.querySelectorAll('.ring-node')];
+  if (!nodes.length) return;
+  const nodeW = nodes[0].offsetWidth || 62;
+  const R = Math.max(0, ring.clientWidth / 2 - nodeW / 2 - 4);
+  const activeIdx = Math.max(0, RING_ORDER.indexOf(currentMode));
+  const rot = -activeIdx * 120;
+  nodes.forEach((node, i) => {
+    const a = -90 + i * 120 + rot;
+    const isActive = node.dataset.mode === currentMode;
+    node.style.transform = 'rotate(' + a + 'deg) translate(' + R + 'px) rotate(' + (-a) + 'deg) scale(' + (isActive ? 1.1 : 1) + ')';
+    node.classList.toggle('active', isActive);
+    node.setAttribute('aria-selected', isActive ? 'true' : 'false');
+  });
+}
+
+// 中心圆与明细文案跟随当前模式
+function updateRingInfo() {
+  const meta = RING_META[currentMode];
+  const dict = t();
+  const hub = document.getElementById('ringHub');
+  const hubIcon = document.getElementById('hubIcon');
+  const hubName = document.getElementById('hubName');
+  const hubZh = document.getElementById('hubZh');
+  const tag = document.getElementById('ringTag');
+  const chip = document.getElementById('modeCurrentLabel');
+  if (hubIcon) hubIcon.textContent = meta.emoji;
+  if (hub) hub.style.borderColor = meta.color;
+  if (hubName && dict[meta.nameKey]) hubName.textContent = dict[meta.nameKey];
+  if (hubZh && dict[meta.zhKey]) hubZh.textContent = dict[meta.zhKey];
+  if (tag && dict[meta.tagKey]) tag.textContent = dict[meta.tagKey];
+  if (chip && dict[meta.labelKey]) chip.textContent = dict[meta.labelKey];
+  layoutRing();
+}
+window.updateRingInfo = updateRingInfo;
 
 function switchMode(mode) {
   currentMode = mode;
-  document.querySelectorAll('.mode-tab').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
   document.querySelectorAll('.mode-panel').forEach(p => p.style.display = 'none');
   document.getElementById('mode-' + mode).style.display = 'block';
   stage.dataset.mode = mode;
@@ -50,6 +99,7 @@ function switchMode(mode) {
   updateGenerateBtn();
   setStage('examples');
   updateSample();
+  updateRingInfo();
 }
 window.switchMode = switchMode;
 

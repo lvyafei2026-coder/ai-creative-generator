@@ -105,5 +105,14 @@
   "errRateLimit": "Too many requests. Please wait a minute.",
   "uploadClickShort": "Click to upload",
   "modeBabyLabel": "👶 Baby prediction",
-  "proofHair2": "Different style"
+  "proofHair2": "Different style",
+  "ringNameTattoo": "Tattoo",
+  "ringNameBaby": "Baby",
+  "ringNameHair": "Hairstyle",
+  "ringZhTattoo": "纹身预览",
+  "ringZhBaby": "宝宝预测",
+  "ringZhHair": "发型试戴",
+  "ringTagTattoo": "Upload a body photo, preview six tattoo styles",
+  "ringTagBaby": "Blend two parent photos into a baby portrait",
+  "ringTagHair": "Try eight hairstyles on one selfie"
 }
