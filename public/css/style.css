@@ -24,9 +24,9 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 22px; box-shadow: var(--shadow); }
 
 /* ---- 工作台左右分栏：左控制面板 / 右固定画布（状态切换） ---- */
-.studio { display: grid; grid-template-columns: 122px 352px minmax(0, 1fr); gap: 16px; align-items: stretch; }
-.studio .card { margin-bottom: 0; display: flex; flex-direction: column; padding: 18px; }
-.stage { padding: 18px; min-height: 0; }
+.studio { display: grid; grid-template-columns: 122px 352px minmax(0, 1fr); gap: 0; align-items: stretch; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.studio > .card { margin-bottom: 0; display: flex; flex-direction: column; padding: 18px; background: transparent; border: none; box-shadow: none; border-radius: 0; }
+.stage { padding: 18px; min-height: 0; border-left: 2px solid var(--border); }
 .ex-view { display: flex; flex-direction: column; }
 .ex-head { margin-bottom: 12px; }
 .ex-title { font-size: 1.02rem; margin: 0 0 4px; letter-spacing: -0.01em; }
@@ -119,7 +119,7 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .trust-bar li::before { content: "✓"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.72rem; font-weight: 900; color: var(--mint); }
 
 /* ---- Before/After 证明区 ---- */
-.proof { max-width: 1000px; margin: 8px auto 0; }
+.proof { max-width: 1000px; margin: 20px auto 0; }
 .proof h2 { text-align: center; margin: 0 0 8px; }
 .proof-sub { text-align: center; color: var(--muted); font-size: 0.88rem; max-width: 620px; margin: 0 auto 22px; }
 .proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -163,9 +163,9 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .studio[data-mode="tattoo"] .preset-btn { background: #221a38; border-color: #3b2f5c; }
 .studio[data-mode="tattoo"] .preset-btn:hover { border-color: var(--accent); }
 .studio[data-mode="tattoo"] .ex-card { background: #221a38; border-color: #3b2f5c; }
-.studio[data-mode="tattoo"] .rail-item { background: #221a38; border-color: #3b2f5c; }
 .studio[data-mode="tattoo"] .rail-item .rail-label { color: var(--text); }
-.studio[data-mode="tattoo"] .rail-item.active { border-color: var(--accent); }
+.studio[data-mode="tattoo"] .rail-item:hover { border-color: #3b2f5c; }
+.studio[data-mode="tattoo"] .rail-item.active { border-color: var(--accent); background: #171126; }
 .studio[data-mode="tattoo"] .rail-item.active .rail-label { color: var(--accent); }
 .studio[data-mode="tattoo"] .ex-card img { background: #171126; }
 .studio[data-mode="tattoo"] .ex-card:hover { border-color: var(--accent); }
@@ -203,12 +203,12 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 6px; }
 
 /* ---- 功能菜单栏：每个功能用真实效果图做模块 ---- */
-.mode-rail { display: flex; flex-direction: column; gap: 10px; }
-.rail-item { padding: 0; overflow: hidden; border: 2px solid var(--border); background: #fff; border-radius: 14px; cursor: pointer; font-family: inherit; box-shadow: 0 2px 0 rgba(36,26,51,0.06); transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; }
+.mode-rail { display: flex; flex-direction: column; gap: 10px; padding: 14px 12px; background: var(--lav); border-right: 2px solid var(--border); }
+.rail-item { padding: 0; overflow: hidden; border: 2px solid transparent; background: transparent; border-radius: 10px; cursor: pointer; font-family: inherit; transition: border-color 0.15s, background 0.15s; display: flex; flex-direction: column; }
 .rail-item img { display: block; width: 100%; height: 92px; object-fit: cover; background: #f1ebfa; }
-.rail-label { display: block; padding: 6px 2px; font-size: 0.7rem; font-weight: 800; color: var(--text); text-align: center; }
-.rail-item:hover { border-color: #c4b5fd; transform: translateY(-2px); }
-.rail-item.active { border-color: var(--accent); box-shadow: 0 3px 0 rgba(109,40,217,0.34); }
+.rail-label { display: block; padding: 6px 2px; font-size: 0.7rem; font-weight: 800; color: var(--muted); text-align: center; }
+.rail-item:hover { border-color: var(--border); }
+.rail-item.active { border-color: var(--accent); background: var(--card); }
 .rail-item.active .rail-label { color: var(--accent-dark); }
 
 input[type="text"] { width: 100%; padding: 11px 13px; border: 2px solid var(--border); border-radius: 11px; font-size: 0.95rem; margin-bottom: 4px; background: #fff; color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; font-family: inherit; }
@@ -307,13 +307,14 @@ li { margin-bottom: 8px; line-height: 1.65; }
 
 
 @media (max-width: 1080px) {
-  .studio { grid-template-columns: 112px 330px minmax(0, 1fr); gap: 14px; }
+  .studio { grid-template-columns: 112px 330px minmax(0, 1fr); }
   .rail-item img { height: 84px; }
 }
 
 @media (max-width: 900px) {
   .studio { grid-template-columns: 1fr; }
-  .mode-rail { flex-direction: row; }
+  .mode-rail { flex-direction: row; border-right: none; border-bottom: 2px solid var(--border); padding: 12px; }
   .rail-item { flex: 1; }
   .rail-item img { height: 74px; }
+  .stage { border-left: none; border-top: 2px solid var(--border); }
 }
