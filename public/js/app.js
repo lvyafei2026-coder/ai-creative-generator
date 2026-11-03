@@ -298,7 +298,8 @@ function downloadResult() {
 
 function showError(msg) {
   errorEl.textContent = msg;
-  errorEl.style.display = 'block';
+  errorEl.style.display = 'flex';
+  setTimeout(() => errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
 }
 
 window.generate = generate;
