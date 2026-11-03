@@ -20,11 +20,11 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .hero h1 { font-size: 1.85rem; margin: 0 0 8px; font-weight: 850; letter-spacing: -0.02em; }
 .hero p { margin: 0 auto; color: #6f6584; font-size: 0.98rem; max-width: 560px; }
 
-.wrap { max-width: 1000px; margin: -44px auto 0; padding: 0 20px 64px; position: relative; z-index: 2; }
+.wrap { max-width: 1080px; margin: -44px auto 0; padding: 0 20px 64px; position: relative; z-index: 2; }
 .card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 22px; box-shadow: var(--shadow); }
 
 /* ---- 工作台左右分栏：左控制面板 / 右固定画布（状态切换） ---- */
-.studio { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 20px; align-items: stretch; }
+.studio { display: grid; grid-template-columns: 122px 352px minmax(0, 1fr); gap: 16px; align-items: stretch; }
 .studio .card { margin-bottom: 0; display: flex; flex-direction: column; padding: 18px; }
 .stage { padding: 18px; min-height: 0; }
 .ex-view { display: flex; flex-direction: column; }
@@ -163,6 +163,10 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .studio[data-mode="tattoo"] .preset-btn { background: #221a38; border-color: #3b2f5c; }
 .studio[data-mode="tattoo"] .preset-btn:hover { border-color: var(--accent); }
 .studio[data-mode="tattoo"] .ex-card { background: #221a38; border-color: #3b2f5c; }
+.studio[data-mode="tattoo"] .rail-item { background: #221a38; border-color: #3b2f5c; }
+.studio[data-mode="tattoo"] .rail-item .rail-label { color: var(--text); }
+.studio[data-mode="tattoo"] .rail-item.active { border-color: var(--accent); }
+.studio[data-mode="tattoo"] .rail-item.active .rail-label { color: var(--accent); }
 .studio[data-mode="tattoo"] .ex-card img { background: #171126; }
 .studio[data-mode="tattoo"] .ex-card:hover { border-color: var(--accent); }
 .studio[data-mode="tattoo"] .ex-label { color: var(--text); }
@@ -198,29 +202,14 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .mode-desc { font-size: 0.88rem; color: var(--muted); margin: 0 0 12px; }
 label { display: block; font-weight: 800; font-size: 0.85rem; margin-bottom: 6px; }
 
-/* 左栏当前模式标识（切换器在 hero 环形导航） */
-.mode-current { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; font-size: 0.74rem; font-weight: 800; color: var(--muted); background: var(--lav); border-radius: 999px; padding: 5px 12px; margin-bottom: 12px; }
-.mode-current .mc-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
-
-/* ---- 环形功能导航（hero 右侧） ---- */
-.hero-shell { display: grid; grid-template-columns: minmax(0, 1fr) 288px; gap: 30px; align-items: center; max-width: 1000px; text-align: left; }
-.hero-copy h1, .hero-copy p { text-align: left; margin-left: 0; margin-right: 0; }
-.hero-copy .trust-bar { justify-content: flex-start; }
-.ring-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.mode-ring { position: relative; width: 250px; height: 250px; }
-.ring-orbit { position: absolute; inset: 16px; border: 1.5px dashed rgba(124,58,237,0.34); border-radius: 50%; }
-.ring-node { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; margin: -31px 0 0 -31px; padding: 0; border-radius: 50%; border: 2px solid var(--border); background: #fff; color: var(--text); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; font-family: inherit; box-shadow: 0 3px 0 rgba(36,26,51,0.08); transition: transform 0.55s cubic-bezier(0.45,0.05,0.35,1.2), background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; will-change: transform; }
-.ring-node-icon { font-size: 1.05rem; line-height: 1; }
-.ring-node-label { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.01em; }
-.ring-node:hover:not(.active) { border-color: #c4b5fd; }
-.ring-node.active[data-mode="tattoo"] { background: #3c3489; border-color: #3c3489; color: #fff; box-shadow: 0 5px 0 rgba(60,52,137,0.4); }
-.ring-node.active[data-mode="baby"] { background: #db2777; border-color: #db2777; color: #fff; box-shadow: 0 5px 0 rgba(219,39,119,0.38); }
-.ring-node.active[data-mode="hairstyle"] { background: #7c3aed; border-color: #7c3aed; color: #fff; box-shadow: 0 5px 0 rgba(109,40,217,0.42); }
-.ring-hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 106px; height: 106px; border-radius: 50%; background: #fff; border: 2px solid #7c3aed; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; text-align: center; padding: 6px; box-shadow: 0 4px 0 rgba(36,26,51,0.07); transition: border-color 0.25s; }
-.ring-hub-icon { font-size: 1.15rem; line-height: 1; }
-.ring-hub-name { font-size: 0.8rem; font-weight: 850; line-height: 1.15; }
-.ring-hub-zh { font-size: 0.6rem; font-weight: 700; color: var(--muted); line-height: 1.2; }
-.ring-tag { margin: 0; max-width: 260px; font-size: 0.76rem; line-height: 1.45; color: var(--muted); text-align: center; }
+/* ---- 功能菜单栏：每个功能用真实效果图做模块 ---- */
+.mode-rail { display: flex; flex-direction: column; gap: 10px; }
+.rail-item { padding: 0; overflow: hidden; border: 2px solid var(--border); background: #fff; border-radius: 14px; cursor: pointer; font-family: inherit; box-shadow: 0 2px 0 rgba(36,26,51,0.06); transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; display: flex; flex-direction: column; }
+.rail-item img { display: block; width: 100%; height: 92px; object-fit: cover; background: #f1ebfa; }
+.rail-label { display: block; padding: 6px 2px; font-size: 0.7rem; font-weight: 800; color: var(--text); text-align: center; }
+.rail-item:hover { border-color: #c4b5fd; transform: translateY(-2px); }
+.rail-item.active { border-color: var(--accent); box-shadow: 0 3px 0 rgba(109,40,217,0.34); }
+.rail-item.active .rail-label { color: var(--accent-dark); }
 
 input[type="text"] { width: 100%; padding: 11px 13px; border: 2px solid var(--border); border-radius: 11px; font-size: 0.95rem; margin-bottom: 4px; background: #fff; color: var(--text); transition: border-color 0.15s, box-shadow 0.15s; font-family: inherit; }
 input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
@@ -316,12 +305,15 @@ li { margin-bottom: 8px; line-height: 1.65; }
 @media (max-width: 960px) { .site-footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 34px; } .site-footer-column:first-child { grid-column: 1 / -1; } }
 @media (max-width: 760px) { .site-footer { padding: 36px 20px 20px !important; } .site-footer-grid { grid-template-columns: 1fr; gap: 28px; } .site-footer-column:first-child { grid-column: auto; } .site-footer-links { gap: 10px 14px; } .site-footer-bottom { margin-top: 28px; } }
 
+
+@media (max-width: 1080px) {
+  .studio { grid-template-columns: 112px 330px minmax(0, 1fr); gap: 14px; }
+  .rail-item img { height: 84px; }
+}
+
 @media (max-width: 900px) {
-  .hero-shell { grid-template-columns: 1fr; gap: 22px; text-align: center; }
-  .hero-copy h1, .hero-copy p { text-align: center; margin-left: auto; margin-right: auto; }
-  .hero-copy .trust-bar { justify-content: center; }
-  .mode-ring { width: 224px; height: 224px; }
-  .ring-hub { width: 96px; height: 96px; }
-  .ring-node { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
-  .ring-node-icon { font-size: 0.95rem; }
+  .studio { grid-template-columns: 1fr; }
+  .mode-rail { flex-direction: row; }
+  .rail-item { flex: 1; }
+  .rail-item img { height: 74px; }
 }

@@ -83,7 +83,7 @@
 }
 </script>
 
-<link rel="stylesheet" href="/css/style.css?v=20261103c">
+<link rel="stylesheet" href="/css/style.css?v=20261103d">
 <style id="footer-groups-css">
 .site-footer-grid{grid-template-columns:minmax(0,0.85fr) minmax(0,2.65fr)!important;gap:40px!important}
 .site-footer-column:nth-child(2){grid-row:1/span 2!important}
@@ -121,50 +121,38 @@
 
 
 <header class="hero">
-  <div class="hero-inner hero-shell">
-    <div class="hero-copy">
-      <div class="hero-badge" data-i18n="badge">🎨 Tattoo · Baby · Hairstyle</div>
-      <h1 data-i18n="h1">AI Creative Generator</h1>
-      <p data-i18n="subtitle">Preview tattoos, imagine your future baby, or try on new hairstyles — all from one upload.</p>
-      <ul class="trust-bar">
-        <li data-i18n="trustSignup">No signup</li>
-        <li data-i18n="trustWatermark">No watermark</li>
-        <li data-i18n="trustFree">Free daily quota</li>
-        <li data-i18n="trustPrivate">Photos not stored</li>
-      </ul>
-    </div>
-    <div class="ring-col">
-      <div class="mode-ring" id="modeRing" role="tablist" aria-label="Choose a function">
-        <div class="ring-orbit" aria-hidden="true"></div>
-        <button type="button" class="ring-node active" role="tab" data-mode="tattoo" onclick="switchMode('tattoo')">
-          <span class="ring-node-icon" aria-hidden="true">🎨</span>
-          <span class="ring-node-label" data-i18n="ringNameTattoo">Tattoo</span>
-        </button>
-        <button type="button" class="ring-node" role="tab" data-mode="baby" onclick="switchMode('baby')">
-          <span class="ring-node-icon" aria-hidden="true">👶</span>
-          <span class="ring-node-label" data-i18n="ringNameBaby">Baby</span>
-        </button>
-        <button type="button" class="ring-node" role="tab" data-mode="hairstyle" onclick="switchMode('hairstyle')">
-          <span class="ring-node-icon" aria-hidden="true">💇</span>
-          <span class="ring-node-label" data-i18n="ringNameHair">Hairstyle</span>
-        </button>
-        <div class="ring-hub" id="ringHub" aria-live="polite">
-          <span class="ring-hub-icon" id="hubIcon" aria-hidden="true">🎨</span>
-          <span class="ring-hub-name" id="hubName" data-i18n="ringNameTattoo">Tattoo</span>
-          <span class="ring-hub-zh" id="hubZh" data-i18n="ringZhTattoo">纹身预览</span>
-        </div>
-      </div>
-      <p class="ring-tag" id="ringTag" data-i18n="ringTagTattoo">Upload a body photo, preview six tattoo styles</p>
-    </div>
+  <div class="hero-inner">
+    <div class="hero-badge" data-i18n="badge">🎨 Tattoo · Baby · Hairstyle</div>
+    <h1 data-i18n="h1">AI Creative Generator</h1>
+    <p data-i18n="subtitle">Preview tattoos, imagine your future baby, or try on new hairstyles — all from one upload.</p>
+    <ul class="trust-bar">
+      <li data-i18n="trustSignup">No signup</li>
+      <li data-i18n="trustWatermark">No watermark</li>
+      <li data-i18n="trustFree">Free daily quota</li>
+      <li data-i18n="trustPrivate">Photos not stored</li>
+    </ul>
   </div>
 </header>
 
 <main class="wrap">
   <div class="studio" id="studio" data-mode="tattoo">
+    <nav class="mode-rail" aria-label="Choose a function">
+      <button type="button" class="rail-item active" data-mode="tattoo" onclick="switchMode('tattoo')">
+        <img src="/examples/tattoo/japanese.jpg" alt="Tattoo preview example" width="128" height="96">
+        <span class="rail-label" data-i18n="ringNameTattoo">Tattoo</span>
+      </button>
+      <button type="button" class="rail-item" data-mode="baby" onclick="switchMode('baby')">
+        <img src="/examples/baby/baby.jpg" alt="Baby prediction example" width="128" height="96" loading="lazy">
+        <span class="rail-label" data-i18n="ringNameBaby">Baby</span>
+      </button>
+      <button type="button" class="rail-item" data-mode="hairstyle" onclick="switchMode('hairstyle')">
+        <img src="/examples/hair/curly.jpg" alt="Hairstyle try-on example" width="128" height="96" loading="lazy">
+        <span class="rail-label" data-i18n="ringNameHair">Hairstyle</span>
+      </button>
+    </nav>
+
     <section class="card">
       <h2 class="visually-hidden" data-i18n="calcHeading">Creative generator</h2>
-
-      <div class="mode-current"><span class="mc-dot" aria-hidden="true"></span><span id="modeCurrentLabel" data-i18n="modeTattoo">🎨 Tattoo</span></div>
 
       <!-- Tattoo -->
       <div id="mode-tattoo" class="mode-panel">
@@ -530,6 +518,6 @@
 </footer>
 
 <script src="/js/i18n.js"></script>
-<script src="/js/app.js?v=20261103c"></script>
+<script src="/js/app.js?v=20261103d"></script>
 </body>
 </html>
