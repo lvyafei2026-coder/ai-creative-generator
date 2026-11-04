@@ -58,7 +58,35 @@ const PRESETS = {
   }
 };
 
+// 全局每日生成上限：账户 Workers AI 免费层 10,000 neurons/天（UTC 日切），全站群共享。
+//   flux-2-klein-4b 1024x1024 实测单张约 250-400 neurons（按 330 估）。
+//   账户预算切分（2026-11-04）：figurine 8 张 ≈2.6k + 本站 6 张 ≈2.0k
+//   + radar 分析 12 次 ≈3.1k + music 封面 ≈1k，余下 ~1.3k 给 3b 文案站。
+//   本站原先只有 per-IP 限流（20 次/60s），没有任何总量闸门，被人一刷就能把账户额度清空。
+//   KV 复用 figurine 的 namespace，key 前缀区分，两站各算各的格数。
+const DAILY_LIMIT = 6;
+const QUOTA_PREFIX = 'img:creative:';
+
+function todayKey() {
+  return QUOTA_PREFIX + new Date().toISOString().slice(0, 10);
+}
+
+async function checkDailyQuota(env) {
+  const key = todayKey();
+  const current = parseInt((await env.QUOTA_KV.get(key)) || '0', 10);
+  if (current >= DAILY_LIMIT) return { ok: false, current };
+  await env.QUOTA_KV.put(key, String(current + 1), { expirationTtl: 172800 });
+  return { ok: true, current };
+}
+
+async function refundQuota(env) {
+  const key = todayKey();
+  const current = parseInt((await env.QUOTA_KV.get(key)) || '0', 10);
+  if (current > 0) await env.QUOTA_KV.put(key, String(current - 1), { expirationTtl: 172800 });
+}
+
 async function handleGenerate(request, env) {
+  let quotaReserved = false;
   try {
     const formData = await request.formData();
     const mode = formData.get('mode') || 'tattoo';
@@ -88,6 +116,16 @@ async function handleGenerate(request, env) {
     if (mode === 'baby' && (!image0 || !image1)) {
       return json({ error: 'Both parent photos are required for baby mode.' }, 400);
     }
+
+    // 账户级出图预算：校验通过后才占格，避免无效请求吃掉配额
+    const quota = await checkDailyQuota(env);
+    if (!quota.ok) {
+      return json({
+        error: "Today's free quota is used up. Please come back tomorrow.",
+        code: 'QUOTA_EXCEEDED'
+      }, 429);
+    }
+    quotaReserved = true;
 
     // 组装 multipart body
     const apiForm = new FormData();
@@ -129,8 +167,10 @@ async function handleGenerate(request, env) {
       code: err.code,        // 这个会显示 3030 或 4006
       name: err.name
     });
-    // Workers AI 免费层日配额耗尽（4006 neurons exhausted），对齐 figurine 站的处理
+    // Workers AI 免费层日配额耗尽（4006 neurons exhausted），对齐 figurine 站的处理：
+    // 额度判定在入口没产生推理，把预占的格还回去
     if (String(err.message || '').includes('4006') || err.code === 4006) {
+      if (quotaReserved) await refundQuota(env);
       return json({
         error: "Today's free quota is used up. Please come back tomorrow.",
         code: 'QUOTA_EXCEEDED'

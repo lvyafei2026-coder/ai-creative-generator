@@ -16,3 +16,9 @@ run_worker_first = ["/*"]
 name = "AI_RATE_LIMITER"
 namespace_id = "1008"
 simple = { limit = 20, period = 60 }
+
+# 账户级出图预算（每日格数）：与 ai-3d-figurine-generator 共用同一个 namespace，
+# 靠 key 前缀 img:creative: / img:figurine: 区分。两站合计压在账户 10k neurons/天内。
+[[kv_namespaces]]
+binding = "QUOTA_KV"
+id = "6ada6a3ea5e549c3962bc55e6a8463bb"
