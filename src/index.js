@@ -72,6 +72,11 @@ function todayKey() {
 }
 
 async function checkDailyQuota(env) {
+  // binding 没生效时放行（旧行为），但要在日志里喊一声——否则整站会因为一个 KV 绑定没接上而全 500
+  if (!env.QUOTA_KV) {
+    console.error('QUOTA_KV 未绑定，出图配额失效，本次放行');
+    return { ok: true, current: 0 };
+  }
   const key = todayKey();
   const current = parseInt((await env.QUOTA_KV.get(key)) || '0', 10);
   if (current >= DAILY_LIMIT) return { ok: false, current };
@@ -80,6 +85,7 @@ async function checkDailyQuota(env) {
 }
 
 async function refundQuota(env) {
+  if (!env.QUOTA_KV) return;
   const key = todayKey();
   const current = parseInt((await env.QUOTA_KV.get(key)) || '0', 10);
   if (current > 0) await env.QUOTA_KV.put(key, String(current - 1), { expirationTtl: 172800 });
