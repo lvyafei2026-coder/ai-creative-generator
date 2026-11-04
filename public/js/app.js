@@ -84,21 +84,22 @@ function setupUpload(zoneId, inputId, fileKey) {
   const thumb = document.getElementById('previewImg' + fileKey.charAt(0).toUpperCase() + fileKey.slice(1));
 
   zone.addEventListener('click', () => input.click());
+  chip.addEventListener('click', (e) => { if (!e.target.closest('.chip-remove')) input.click(); });
   zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
   zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
   zone.addEventListener('drop', (e) => {
     e.preventDefault();
     zone.classList.remove('dragover');
     const f = e.dataTransfer.files[0];
-    if (f) handleFile(f, fileKey, chip, thumb);
+    if (f) handleFile(f, fileKey, chip, thumb, zone);
   });
   input.addEventListener('change', () => {
     const f = input.files[0];
-    if (f) handleFile(f, fileKey, chip, thumb);
+    if (f) handleFile(f, fileKey, chip, thumb, zone);
   });
 }
 
-async function handleFile(file, key, chipEl, thumbEl) {
+async function handleFile(file, key, chipEl, thumbEl, zoneEl) {
   const tr = t();
   if (!file.type.startsWith('image/')) {
     showError(tr.errType || 'Please upload an image.');
@@ -113,6 +114,7 @@ async function handleFile(file, key, chipEl, thumbEl) {
   files[key] = compressed;
   thumbEl.src = URL.createObjectURL(compressed);
   chipEl.style.display = 'flex';
+  if (zoneEl) zoneEl.style.display = 'none'; // 照片卡替换上传框，左栏高度恒定不溢出
   errorEl.style.display = 'none';
   updateGenerateBtn();
   if (key === modeFileKey()) setStage('preview');
@@ -155,7 +157,9 @@ function compressImage(file, maxSize) {
 function clearImage(key) {
   files[key] = null;
   const map = { tattoo: 'previewTattoo', baby1: 'previewBaby1', baby2: 'previewBaby2', hair: 'previewHair' };
+  const zoneMap = { tattoo: 'uploadZoneTattoo', baby1: 'uploadZoneBaby1', baby2: 'uploadZoneBaby2', hair: 'uploadZoneHair' };
   document.getElementById(map[key]).style.display = 'none';
+  document.getElementById(zoneMap[key]).style.display = '';
   if (resultImg) resultImg.removeAttribute('src');
   updateGenerateBtn();
   if (currentMode === 'tattoo' && key === 'tattoo') setStage('examples');
