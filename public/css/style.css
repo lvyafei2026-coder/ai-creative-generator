@@ -24,21 +24,21 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 .card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 22px; box-shadow: var(--shadow); }
 
 /* ---- 工作台左右分栏：左控制面板 / 右固定画布（状态切换） ---- */
-.studio { display: grid; grid-template-columns: 122px 352px minmax(0, 1fr); gap: 0; align-items: stretch; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.studio { display: grid; grid-template-columns: 122px 352px minmax(0, 1fr); gap: 0; align-items: stretch; height: 511px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
 .studio > .card { margin-bottom: 0; display: flex; flex-direction: column; padding: 18px; background: transparent; border: none; box-shadow: none; border-radius: 0; }
 .stage { padding: 18px; min-height: 0; border-left: 2px solid var(--border); }
-.ex-view { display: flex; flex-direction: column; }
+.ex-view { display: flex; flex-direction: column; min-height: 0; }
 .ex-head { margin-bottom: 12px; }
 .ex-title { font-size: 1.02rem; margin: 0 0 4px; letter-spacing: -0.01em; }
 .ex-hint { font-size: 0.8rem; color: var(--muted); margin: 0; }
-.ex-grid { display: none; grid-template-columns: repeat(4, 1fr); gap: 10px; flex: 1; align-content: center; }
+.ex-grid { display: none; grid-template-columns: repeat(4, 1fr); gap: 10px; flex: 1; align-content: stretch; grid-auto-rows: minmax(0, 1fr); min-height: 0; }
 .stage[data-mode="tattoo"] #exTattoo { grid-template-columns: repeat(3, 1fr); }
 .stage[data-mode="baby"] #exBaby { grid-template-columns: repeat(2, 1fr); }
 .stage[data-mode="tattoo"] #exTattoo,
 .stage[data-mode="hairstyle"] #exHair,
 .stage[data-mode="baby"] #exBaby { display: grid; }
-.ex-card { padding: 0; border: 2px solid var(--border); background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer; font-family: inherit; transition: border-color 0.15s, transform 0.15s; box-shadow: 0 2px 0 rgba(36,26,51,0.06); }
-.ex-card img { display: block; width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: cover; background: #f1ebfa; }
+.ex-card { display: flex; flex-direction: column; min-height: 0; padding: 0; border: 2px solid var(--border); background: #fff; border-radius: 12px; overflow: hidden; cursor: pointer; font-family: inherit; transition: border-color 0.15s, transform 0.15s; box-shadow: 0 2px 0 rgba(36,26,51,0.06); }
+.ex-card img { display: block; flex: 1; width: 100%; height: auto; min-height: 0; object-fit: cover; object-position: center 20%; background: #f1ebfa; }
 .ex-label { display: block; padding: 7px 4px; font-size: 0.75rem; font-weight: 700; color: var(--text); text-align: center; }
 .ex-card:hover { border-color: #c4b5fd; transform: translateY(-2px); }
 .ex-card.active { border-color: var(--accent); box-shadow: 0 3px 0 rgba(109,40,217,0.4); }
@@ -182,12 +182,12 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 
 /* Baby 左栏：双上传并排 */
 .upload-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.upload-duo .upload-zone { padding: 18px 10px; margin-bottom: 12px; }
+.upload-duo .upload-zone { padding: 12px 10px; margin-bottom: 8px; }
 .upload-duo .upload-icon { font-size: 1.4rem; }
 .upload-duo .upload-text { font-size: 0.8rem; }
 /* 窄列（双上传并排）下的 chip：迷你照片卡——图在上、文案在下、移除按钮变角标 */
-.upload-duo .file-chip { position: relative; flex-direction: column; align-items: stretch; padding: 8px; gap: 6px; text-align: center; }
-.upload-duo .file-chip img { width: 100%; height: 76px; }
+.upload-duo .file-chip { position: relative; flex-direction: column; align-items: stretch; padding: 6px; gap: 4px; text-align: center; margin-bottom: 8px; }
+.upload-duo .file-chip img { width: 100%; height: 64px; }
 .upload-duo .file-chip span { flex: none; font-size: 0.72rem; line-height: 1.3; }
 .upload-duo .chip-remove { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; font-size: 0.7rem; background: rgba(36,26,51,0.55); color: #fff; }
 @media (max-width: 560px) { .upload-duo { grid-template-columns: 1fr; } }
@@ -199,9 +199,9 @@ body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "P
 #hairPresets .preset-btn span { display: block; padding: 4px 1px; font-size: 0.6rem; font-weight: 800; text-align: center; white-space: nowrap; overflow: hidden; }
 
 /* Baby 右栏：两大人在上、宝宝在下（紧凑一屏） */
-#exBaby { grid-template-columns: repeat(2, 1fr); max-width: 420px; margin: 0 auto; width: 100%; }
-#exBaby .ex-card.baby { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; padding: 10px 12px; }
-#exBaby .ex-card.baby img { width: 170px; height: 170px; flex: 0 0 170px; object-position: center 25%; }
+#exBaby { grid-template-columns: repeat(2, 1fr); width: 100%; }
+#exBaby .ex-card.baby { grid-column: 1 / -1; display: flex; flex-direction: row; align-items: center; gap: 14px; padding: 10px 12px; }
+#exBaby .ex-card.baby img { width: 170px; flex: 0 0 170px; height: auto; align-self: stretch; object-fit: cover; object-position: center 25%; }
 #exBaby .ex-card.baby .ex-label { flex: 1; text-align: left; font-size: 0.95rem; padding: 0; }
 
 .mode-desc { font-size: 0.88rem; color: var(--muted); margin: 0 0 10px; }
@@ -319,11 +319,14 @@ li { margin-bottom: 8px; line-height: 1.65; }
 }
 
 @media (max-width: 900px) {
-  .studio { grid-template-columns: 1fr; }
+  .studio { grid-template-columns: 1fr; height: auto; }
   .mode-rail { flex-direction: row; border-right: none; border-bottom: 2px solid var(--border); padding: 12px; }
   .rail-item { flex: 1; }
   .rail-item img { height: 74px; }
   .stage { border-left: none; border-top: 2px solid var(--border); }
+  .ex-grid { grid-auto-rows: auto; }
+  .ex-card img { flex: none; aspect-ratio: 1 / 1; }
+  #exBaby { max-width: 420px; margin: 0 auto; }
 }
 
 /* 矮视口（笔记本 768 高）：压缩 hero 与说明文案，保证操作+错误提示一屏完成 */
@@ -336,4 +339,7 @@ li { margin-bottom: 8px; line-height: 1.65; }
   .trust-bar li { font-size: 0.72rem; padding: 3px 10px; }
   .wrap { margin-top: -34px; }
   .mode-desc { display: none; }
+}
+@media (max-height: 760px) {
+  .studio { height: 460px; }
 }
